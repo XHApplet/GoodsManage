@@ -3,9 +3,17 @@
 
 import pubdef
 import sqlite3
+import globalmgr
 import buy
+import sell
+import goods
 
-ALL_TABLES = [buy.TABLE_CREAT_SQL]
+ALL_TABLES = [
+    globalmgr.TABLE_CREAT_SQL,
+    sell.TABLE_CREAT_SQL,
+    buy.TABLE_CREAT_SQL,
+    goods.TABLE_CREAT_SQL,
+]
 
 class CDBManager(object):
 

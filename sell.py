@@ -24,6 +24,6 @@ class CSellManager(object):
 class CSell(object):
     pass
 
-def InitBuy():
+def InitSell():
     oSellMgr = CSellManager()
     pubdef.SetManager("sellmgr", oSellMgr)

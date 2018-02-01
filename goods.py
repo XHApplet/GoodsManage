@@ -3,6 +3,17 @@
 
 import pubdef
 
+TABLE_NAME="tbl_goods"
+TABLE_CREAT_SQL="""
+create table %s
+(
+    Goods text PRIMARY KEY not null,
+    BuyPrice integer not null,
+    SellPrice integer not null,
+    Num integer not null
+)
+""" % TABLE_NAME
+
 class CGoodsManager(object):
     def __init__(self):
         self.GoodsInfo = {}

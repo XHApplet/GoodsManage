@@ -281,7 +281,7 @@ class Ui_MainWidget(object):
         MainWidget.addTab(self.InfoWidget, "")
 
         self.retranslateUi(MainWidget)
-        MainWidget.setCurrentIndex(1)
+        MainWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWidget)
         MainWidget.setTabOrder(self.comboBoxInputGoods, self.comboBoxInputType)
         MainWidget.setTabOrder(self.comboBoxInputType, self.comboBoxInputBuyer)

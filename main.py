@@ -2,16 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import goods
-import buy
+
 import dbmanager
+import buy
+import sell
+import goods
 
 import mainwidget
 
 def InitManager():
-    goods.InitGoods()
-    buy.InitBuy()
     dbmanager.InitDBManager()
+    buy.InitBuy()
+    sell.InitSell()
+    goods.InitGoods()
 
 def InitUI():
     mainwidget.InitMainWidget()

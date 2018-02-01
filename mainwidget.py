@@ -10,7 +10,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
     def __init__(self, *args):
         super(CMyWindow, self).__init__(*args)
-        self.TestItems = ["7.25大理石锯条", "300电镀异", "10公分干抛片(闵)", "8.1米成品锯条", "麻石定厚刀头"]
+        self.TestItems = ["love", "7.25大理石锯条", "300电镀异", "10公分干抛片(闵)", "8.1米成品锯条", "麻石定厚刀头"]
         self.setupUi(self)
         self.InitUI()
 
