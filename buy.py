@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import pubdef
+from mytool import pubdefines
 
 TABLE_NAME="tbl_buy"
 TABLE_CREAT_SQL="""
@@ -25,7 +25,7 @@ class CBuyManager(object):
     def InputGoods(self, data, sType, sGoods, fPrice, iNum, sRemark):
         sql = "insert into %s(Time, Type, Goods, Price, Num, Remark) values('%s', '%s', %s, %s, '%s')" % (TABLE_NAME,
             data, sType, sGoods, fPrice, iNum, sRemark)
-        pubdef.CallManagerFunc("dbmgr", "Excute", sql)
+        pubdefines.call_manager_func("dbmgr", "Excute", sql)
 
     def Query(self):
         pass
@@ -42,4 +42,4 @@ class CBuyManager(object):
 
 def InitBuy():
     oBugMgr = CBuyManager()
-    pubdef.SetManager("buymgr", oBugMgr)
+    pubdefines.set_manager("buymgr", oBugMgr)

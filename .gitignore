@@ -1,2 +1,4 @@
 *.pyc
 goods.db
+mytool
+log

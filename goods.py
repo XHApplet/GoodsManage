@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import pubdef
+from mytool import pubdefines
 
 TABLE_NAME="tbl_goods"
 TABLE_CREAT_SQL="""
@@ -35,4 +35,4 @@ class CGoods(object):
 
 def InitGoods():
     oGoodsMgr = CGoodsManager()
-    pubdef.SetManager("goodsmgr", oGoodsMgr)
+    pubdefines.set_manager("goodsmgr", oGoodsMgr)

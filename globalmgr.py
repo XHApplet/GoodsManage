@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import pubdef
+from mytool import pubdefines
 
 TABLE_NAME="tbl_global"
 TABLE_CREAT_SQL="""
@@ -24,7 +24,7 @@ class CGlobalManager(object):
 
     def Load(self, dInfo):
         sql = "select * from %s" % TABLE_NAME
-        result = pubdef.CallManagerFunc("dbmgr", "Query", sql)
+        result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         # 第一次获取为空时，保存空数据到数据库
         if len(result) == 0:
             self.SaveAll()
@@ -63,4 +63,4 @@ class CGoods(object):
 
 def InitGoods():
     obj = CGlobalManager()
-    pubdef.SetManager("globalmgr", obj)
+    pubdefines.set_manager("globalmgr", obj)

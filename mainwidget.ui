@@ -19,7 +19,7 @@
    <string>商品出入统计--肖豪</string>
   </property>
   <property name="toolTip">
-   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;进货&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   <string notr="true"/>
   </property>
   <property name="currentIndex">
    <number>0</number>

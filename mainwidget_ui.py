@@ -15,6 +15,7 @@ class Ui_MainWidget(object):
         font = QtGui.QFont()
         font.setPointSize(15)
         MainWidget.setFont(font)
+        MainWidget.setToolTip("")
         self.InputWidget = QtWidgets.QWidget()
         self.InputWidget.setEnabled(True)
         self.InputWidget.setObjectName("InputWidget")
@@ -302,7 +303,6 @@ class Ui_MainWidget(object):
     def retranslateUi(self, MainWidget):
         _translate = QtCore.QCoreApplication.translate
         MainWidget.setWindowTitle(_translate("MainWidget", "商品出入统计--肖豪"))
-        MainWidget.setToolTip(_translate("MainWidget", "<html><head/><body><p>进货</p></body></html>"))
         self.label_3.setText(_translate("MainWidget", "价格"))
         self.dateEditInput.setDisplayFormat(_translate("MainWidget", "yyyy/M/d"))
         self.label.setText(_translate("MainWidget", "日期"))

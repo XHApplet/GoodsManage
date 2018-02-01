@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import pubdef
+from mytool import pubdefines
 import sqlite3
 import globalmgr
 import buy
@@ -39,7 +39,8 @@ class CDBManager(object):
         try:
             cursor.execute(sql)
             coon.commit()
-        except sqlite3.Error as e:
+        except Exception as e:
+            # TODO
             print(e)
             return e.args[0]
         # coon.close()
@@ -55,4 +56,4 @@ class CDBManager(object):
 
 def InitDBManager():
     obj = CDBManager()
-    pubdef.SetManager("dbmgr", obj)
+    pubdefines.set_manager("dbmgr", obj)

@@ -3,7 +3,7 @@
 
 import sys
 import mainwidget_ui
-import pubdef
+from mytool import pubdefines
 
 from PyQt5 import QtWidgets, QtGui, QtCore
 
@@ -71,10 +71,9 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         iNum = int(self.lineEditInputNum.text())
         sRemark = self.lineEditInputRemark.text()
         print("InputGoods-%s-%s-%s-%s-%s" % (sData, sGoods, fPrice, iNum, sRemark))
-        pubdef.CallManagerFunc("buymgr", "InputGoods", sData, sGoods, fPrice, iNum, sRemark)
+        pubdefines.call_manager_func("buymgr", "InputGoods", sData, sGoods, fPrice, iNum, sRemark)
 
 def InitMainWidget():
     app = QtWidgets.QApplication(sys.argv)
     love = CMyWindow()
     sys.exit(app.exec_())
-

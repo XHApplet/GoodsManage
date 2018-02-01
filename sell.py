@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import pubdef
+from mytool import pubdefines
 
 TABLE_NAME="tbl_sell"
 TABLE_CREAT_SQL="""
@@ -26,4 +26,4 @@ class CSell(object):
 
 def InitSell():
     oSellMgr = CSellManager()
-    pubdef.SetManager("sellmgr", oSellMgr)
+    pubdefines.set_manager("sellmgr", oSellMgr)
