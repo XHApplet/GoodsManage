@@ -5,7 +5,7 @@ import pubdef
 import sqlite3
 import buy
 
-ALL_TABLES = [buy.TABLE_GOODS]
+ALL_TABLES = [buy.TABLE_CREAT_SQL]
 
 class CDBManager(object):
 

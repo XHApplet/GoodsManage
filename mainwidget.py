@@ -10,6 +10,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
     def __init__(self, *args):
         super(CMyWindow, self).__init__(*args)
+        self.TestItems = ["7.25大理石锯条", "300电镀异", "10公分干抛片(闵)", "8.1米成品锯条", "麻石定厚刀头"]
         self.setupUi(self)
         self.InitUI()
 
@@ -20,40 +21,55 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.show()
 
     def InitControl(self):
-        self.dateEdit.setDate(QtCore.QDate.currentDate())
-        self.dateEditOutput.setDate(QtCore.QDate.currentDate())
-        self.comboBoxType.addItems(["xiao hao", 'hola muchachos', 'adios amigos', 'hello world', 'good bye'])
-        self.comboBoxType.setCurrentText("")
+        """初始化控件+限制"""
+        oCurData = QtCore.QDate.currentDate()
+        self.dateEditInput.setDate(oCurData)
+        self.dateEditOutput.setDate(oCurData)
+
+        self.comboBoxInputType.addItems(self.TestItems)
+        self.comboBoxOutputType.addItems(self.TestItems)
+        self.comboBoxInputGoods.addItems(self.TestItems)
+        self.comboBoxOutputGoods.addItems(self.TestItems)
+        self.comboBoxInputBuyer.addItems(self.TestItems)
+        self.comboBoxOutputSeller.addItems(self.TestItems)
+
+        self.comboBoxInputType.setCurrentText("")
+
         tRegExp = QtCore.QRegExp("^(-?\d+)(\.\d+)?$")
-        tValidator = QtGui.QRegExpValidator(tRegExp)
-        self.lineEditPrice.setValidator(tValidator)
-        self.lineEditNum.setValidator(QtGui.QIntValidator(1, 999999))
+        self.ValidatorPrice = QtGui.QRegExpValidator(tRegExp)
+        self.ValidatorNum = QtGui.QIntValidator(1, 999999)
+
+        self.lineEditInputPrice.setValidator(self.ValidatorPrice)
+        self.lineEditInputNum.setValidator(self.ValidatorNum)
+        self.lineEditOutpuPrice.setValidator(self.ValidatorPrice)
+        self.lineEditOutputNum.setValidator(self.ValidatorNum)
+
 
     def InitConnect(self):
-        self.ConfirmButton.clicked.connect(self.InputGoods)
+        self.pushButtonInput.clicked.connect(self.InputGoods)
 
     def ValidInput(self):
-        if not self.lineEditPrice.text():
-            self.lineEditPrice.setPlaceholderText("价格不能为空")
+        if not self.lineEditInputPrice.text():
+            self.lineEditInputPrice.setPlaceholderText("价格不能为空")
             return False
-        if not self.lineEditNum.text():
-            self.lineEditNum.setPlaceholderText("数量不能为空")
+        if not self.lineEditInputNum.text():
+            self.lineEditInputNum.setPlaceholderText("数量不能为空")
             return False
-        if not self.dateEdit.dateTime():
+        if not self.dateEditInput.dateTime():
             return False
-        if not self.comboBoxType.currentText():
+        if not self.comboBoxInputType.currentText():
             return False
         return True
 
     def InputGoods(self):
         if not self.ValidInput():
             return
-        self.dateEdit.setTime(QtCore.QTime.currentTime())
-        sData = self.dateEdit.dateTime()
-        sGoods = self.comboBoxType.currentText()
-        fPrice = float(self.lineEditPrice.text())
-        iNum = int(self.lineEditNum.text())
-        sRemark = self.lineEditRemark.text()
+        self.dateEditInput.setTime(QtCore.QTime.currentTime())
+        sData = self.dateEditInput.dateTime()
+        sGoods = self.comboBoxInputType.currentText()
+        fPrice = float(self.lineEditInputPrice.text())
+        iNum = int(self.lineEditInputNum.text())
+        sRemark = self.lineEditInputRemark.text()
         print("InputGoods-%s-%s-%s-%s-%s" % (sData, sGoods, fPrice, iNum, sRemark))
         pubdef.CallManagerFunc("buymgr", "InputGoods", sData, sGoods, fPrice, iNum, sRemark)
 
