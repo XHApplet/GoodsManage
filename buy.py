@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import mydefines
+
 from mytool import pubdefines
 
 TABLE_NAME="tbl_buy"
@@ -19,16 +21,30 @@ create table %s
 """ % TABLE_NAME
 
 class CBuyManager(object):
+
+    ColInfo = [
+        ("Time", "datetime"),
+        ("Type", "text"),
+        ("Goods", "text"),
+        ("buyer", "text"),
+        ("Price", "real"),
+        ("Num", "integer"),
+        ("Remark", "text"),
+    ]
+    AutoInfo = ("ID", "integer")
+
     def __init__(self):
         self.BuyInfo = {}
 
-    def InputGoods(self, data, sType, sGoods, fPrice, iNum, sRemark):
-        sql = "insert into %s(Time, Type, Goods, Price, Num, Remark) values('%s', '%s', %s, %s, '%s')" % (TABLE_NAME,
-            data, sType, sGoods, fPrice, iNum, sRemark)
+    def InputGoods(self, tData):
+        sql = mydefines.get_insert_sql(TABLE_NAME, tData, self.ColInfo)
         pubdefines.call_manager_func("dbmgr", "Excute", sql)
 
-    def Query(self):
-        pass
+    def QueryAllInfo(self):
+        sql = "select * from %s" % TABLE_NAME
+        result = pubdefines.call_manager_func("dbmgr", "Query", sql)
+        for tmp in result:
+            print(tmp)
 
 # class CBuy(object):
 #     ColType = {

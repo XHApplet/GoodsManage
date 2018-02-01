@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import logging
+
 import mainwidget_ui
-from mytool import pubdefines
 
 from PyQt5 import QtWidgets, QtGui, QtCore
+from mytool import pubdefines
+
 
 class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
     def __init__(self, *args):
@@ -47,6 +50,10 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
     def InitConnect(self):
         self.pushButtonInput.clicked.connect(self.InputGoods)
+        self.pushButtonTmp.clicked.connect(self.TestOP)
+
+    def TestOP(self):
+        pubdefines.call_manager_func("buymgr", "QueryAllInfo")
 
     def ValidInput(self):
         if not self.lineEditInputPrice.text():
@@ -59,6 +66,10 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             return False
         if not self.comboBoxInputType.currentText():
             return False
+        if not self.comboBoxInputGoods.currentText():
+            return False
+        if not self.comboBoxInputBuyer.currentText():
+            return False
         return True
 
     def InputGoods(self):
@@ -66,12 +77,17 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             return
         self.dateEditInput.setTime(QtCore.QTime.currentTime())
         sData = self.dateEditInput.dateTime()
+        sType = self.comboBoxInputType.currentText()
         sGoods = self.comboBoxInputType.currentText()
+        sBuyer = self.comboBoxInputBuyer.currentText()
         fPrice = float(self.lineEditInputPrice.text())
         iNum = int(self.lineEditInputNum.text())
         sRemark = self.lineEditInputRemark.text()
-        print("InputGoods-%s-%s-%s-%s-%s" % (sData, sGoods, fPrice, iNum, sRemark))
-        pubdefines.call_manager_func("buymgr", "InputGoods", sData, sGoods, fPrice, iNum, sRemark)
+
+        # TODO增加商品、价格判断
+        tInfo = (sData, sType, sGoods, sBuyer, fPrice, iNum, sRemark)
+        logging.debug("InputGoods-%s" % (tInfo,))
+        pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
 
 def InitMainWidget():
     app = QtWidgets.QApplication(sys.argv)

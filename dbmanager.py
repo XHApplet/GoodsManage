@@ -1,12 +1,17 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from mytool import pubdefines
+import os
 import sqlite3
+import logging
+
 import globalmgr
 import buy
 import sell
 import goods
+
+from mytool import pubdefines
+
 
 ALL_TABLES = [
     globalmgr.TABLE_CREAT_SQL,
@@ -24,8 +29,10 @@ class CDBManager(object):
         self.InitTable()
 
     def InitTable(self):
+        if os.path.exists(self.DB_Name):
+            return
         for sql in ALL_TABLES:
-            sResult = self.Excute(sql)
+            self.Excute(sql)
 
     def GetConn(self):
         if not self.Conn:
@@ -33,18 +40,15 @@ class CDBManager(object):
         return self.Conn
 
     def Excute(self, sql):
-        print(sql)
+        logging.debug("sql:" + sql)
         coon = self.GetConn()
         cursor = coon.cursor()
         try:
             cursor.execute(sql)
             coon.commit()
         except Exception as e:
-            # TODO
-            print(e)
-            return e.args[0]
+            logging.error("excute sql:" + str(e))
         # coon.close()
-        return True
 
     def Query(self, sql):
         coon = self.GetConn()
