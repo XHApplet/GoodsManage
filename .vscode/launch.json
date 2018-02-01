@@ -6,7 +6,7 @@
     "configurations": [
 
         {
-            "name": "Debug Goods",
+            "name": "工程调试",
             "type": "python",
             "request": "launch",
             "stopOnEntry": true,
@@ -20,14 +20,18 @@
             ]
         },
         {
-            "name": "Python: Attach",
+            "name": "文件调试",
             "type": "python",
-            "request": "attach",
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "${workspaceFolder}",
-            "port": 3000,
-            "secret": "my_secret",
-            "host": "localhost"
+            "request": "launch",
+            "stopOnEntry": true,
+            "pythonPath": "${config:python.pythonPath}",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "envFile": "${workspaceFolder}/.env",
+            "debugOptions": [
+                "RedirectOutput"
+            ]
         },
         {
             "name": "Python: Terminal (integrated)",
