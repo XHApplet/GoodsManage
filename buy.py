@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import logging
+
 import mydefines
 
 from mytool import pubdefines
@@ -31,29 +33,22 @@ class CBuyManager(object):
         ("Num", "integer"),
         ("Remark", "text"),
     ]
-    AutoInfo = ("ID", "integer")
 
     def __init__(self):
         self.BuyInfo = {}
 
     def InputGoods(self, tData):
+        """进货保存数据库"""
         sql = mydefines.get_insert_sql(TABLE_NAME, tData, self.ColInfo)
         pubdefines.call_manager_func("dbmgr", "Excute", sql)
 
     def QueryAllInfo(self):
+        """查询所有的进货信息"""
         sql = "select * from %s" % TABLE_NAME
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
-        for tmp in result:
-            print(tmp)
-
-# class CBuy(object):
-#     ColType = {
-#         "Time"      :"time",
-#         "Goods"     :"text",
-#         "Price"     :"real",
-#         "Num"       :"integer",
-#         "Remark"    :"text",
-#     }
+        for ID, *tData in result:
+            logging.debug("buy query:%s %s" % (ID, tData))
+            self.BuyInfo[ID] = tData
 
 
 def InitBuy():

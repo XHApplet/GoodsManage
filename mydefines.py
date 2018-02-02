@@ -3,13 +3,18 @@
 
 import marshal
 import binascii
-
+import json
 
 def value_marshal_hex(xValue):
     sData = marshal.dumps(xValue)
     sHex = binascii.b2a_hex(sData)
-    return sHex
+    sStr = sHex.decode()
+    return sStr
 
+def hex_marshal_value(sHex):
+    sData = binascii.a2b_hex(sHex)
+    value = marshal.loads(sData)
+    return value
 
 def get_insert_value(xValue, sType):
     """通过sType类型获取对应的插入数据库的xValue的值"""
@@ -18,10 +23,17 @@ def get_insert_value(xValue, sType):
     if sType in ("text", "datetime"):
         return "'%s'" % xValue
     if sType in ("blob",):
-        sInfo = value_marshal_hex(xValue) 
-        return "'%s'" % sInfo
+        sStr = value_marshal_hex(xValue) 
+        return "'%s'" % sStr
     raise NotImplemented("未定义的类型:%s" % sType)
 
+def get_value_by_data(sData, sType):
+    """通过数据库的的值sData和对应的插入sType,获取真实值"""
+    if sType in ("int", "real", "integer", "text", "datetime"):
+        return sData
+    if sType in ("blob",):
+        return hex_marshal_value(sData)
+    raise NotImplemented("未定义的类型:%s" % sType)
 
 def get_insert_sql(sTableName, tData, lstColInfo):
     """

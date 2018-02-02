@@ -36,7 +36,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.comboBoxInputBuyer.addItems(self.TestItems)
         self.comboBoxOutputSeller.addItems(self.TestItems)
 
-        self.comboBoxInputType.setCurrentText("")
+        # self.comboBoxInputType.setCurrentText("")
 
         tRegExp = QtCore.QRegExp("^(-?\d+)(\.\d+)?$")
         self.ValidatorPrice = QtGui.QRegExpValidator(tRegExp)
@@ -76,7 +76,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         if not self.ValidInput():
             return
         self.dateEditInput.setTime(QtCore.QTime.currentTime())
-        sData = self.dateEditInput.dateTime()
+        oData = self.dateEditInput.dateTime()
+        sData = oData.toString("yyyy-MM-dd hh:mm:ss")
         sType = self.comboBoxInputType.currentText()
         sGoods = self.comboBoxInputType.currentText()
         sBuyer = self.comboBoxInputBuyer.currentText()
@@ -84,10 +85,16 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         iNum = int(self.lineEditInputNum.text())
         sRemark = self.lineEditInputRemark.text()
 
-        # TODO增加商品、价格判断
+        # TODO 增加商品、价格判断
         tInfo = (sData, sType, sGoods, sBuyer, fPrice, iNum, sRemark)
-        logging.debug("InputGoods-%s" % (tInfo,))
+        logging.debug("InputGoods %s" % (tInfo,))
+
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
+        pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
+        # TODO 判断是否已经有了
+        pubdefines.call_manager_func("globalmgr", "AddGoods", sGoods)
+        pubdefines.call_manager_func("globalmgr", "AddType", sType)
+        pubdefines.call_manager_func("globalmgr", "AddInput", sBuyer)
 
 def InitMainWidget():
     app = QtWidgets.QApplication(sys.argv)

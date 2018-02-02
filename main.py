@@ -6,6 +6,7 @@ import sys
 import logging
 
 import dbmanager
+import globalmgr
 import buy
 import sell
 import goods
@@ -31,6 +32,7 @@ def InitConfig():
 
 def InitManager():
     dbmanager.InitDBManager()
+    globalmgr.InitGlobalManager()
     buy.InitBuy()
     sell.InitSell()
     goods.InitGoods()

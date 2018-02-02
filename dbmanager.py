@@ -47,7 +47,7 @@ class CDBManager(object):
             cursor.execute(sql)
             coon.commit()
         except Exception as e:
-            logging.error("excute sql:" + str(e))
+            logging.error("excute error:" + str(e))
         # coon.close()
 
     def Query(self, sql):
