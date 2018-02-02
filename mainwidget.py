@@ -51,6 +51,14 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.pushButtonTmp.clicked.connect(self.TestOP)
         self.pushButtonInput.clicked.connect(self.InputGoods)
         self.pushButtonOutput.clicked.connect(self.OutputGoods)
+        self.currentChanged.connect(self.TabChanged)
+
+
+    def TabChanged(self, iIndex):
+        print("-"*100, iIndex)
+        if iIndex == 2:
+            self.ShowStock()
+
 
     def TestOP(self):
         pubdefines.call_manager_func("buymgr", "QueryAllInfo")
@@ -115,6 +123,12 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         pubdefines.call_manager_func("globalmgr", "AddGoods", sGoods)
         pubdefines.call_manager_func("globalmgr", "AddGoodsType", sGoodsType)
         pubdefines.call_manager_func("globalmgr", "AddSeller", sSeller)
+
+
+    def ShowStock(self):
+        lstTitle = ["商品", "库存", "当前买入价格", "当前卖出价格"]
+        self.tableWidgetStock.setHorizontalHeaderLabels(lstTitle)
+        self.tableWidgetStock.show()
 
 def InitMainWidget():
     app = QtWidgets.QApplication(sys.argv)
