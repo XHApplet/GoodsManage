@@ -49,8 +49,9 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def InitConnect(self):
-        self.pushButtonInput.clicked.connect(self.InputGoods)
         self.pushButtonTmp.clicked.connect(self.TestOP)
+        self.pushButtonInput.clicked.connect(self.InputGoods)
+        self.pushButtonOutput.clicked.connect(self.InputGoods)
 
     def TestOP(self):
         pubdefines.call_manager_func("buymgr", "QueryAllInfo")
@@ -85,16 +86,18 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         iNum = int(self.lineEditInputNum.text())
         sRemark = self.lineEditInputRemark.text()
 
-        # TODO 增加商品、价格判断
         tInfo = (sData, sType, sGoods, sBuyer, fPrice, iNum, sRemark)
-        logging.debug("InputGoods %s" % (tInfo,))
+        logging.debug("InputGoods:%s" % (tInfo,))
 
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
-        # TODO 判断是否已经有了
+        # TODO 判断是否已经有了.增加商品、价格判断
         pubdefines.call_manager_func("globalmgr", "AddGoods", sGoods)
         pubdefines.call_manager_func("globalmgr", "AddType", sType)
         pubdefines.call_manager_func("globalmgr", "AddInput", sBuyer)
+
+    def InputGoods(self):
+        pass
 
 def InitMainWidget():
     app = QtWidgets.QApplication(sys.argv)

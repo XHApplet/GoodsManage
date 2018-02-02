@@ -25,6 +25,7 @@ class CGoodsManager(object):
         ("SellPrice", "integer"),
         ("Num", "integer"),
     ]
+    KeyNum = 1
 
     def __init__(self):
         self.GoodsInfo = {}
@@ -32,23 +33,33 @@ class CGoodsManager(object):
 
     def InputGoods(self, sGoods, fBuyPrice, iNum):
         if not sGoods in self.GoodsInfo:
-            self.GoodsInfo[sGoods] = [0, 0, 0]
+            self.NewGoodsInfo(sGoods)
         tInfo = self.GoodsInfo[sGoods]
         tInfo[0] = fBuyPrice
         tInfo[2] += iNum
-        # TODO update
-        self.Save((sGoods, *tInfo))
+        self.Update(sGoods, tInfo)
 
     def OutputGoods(self, sGoods, fSellPrice, iNum):
         if not sGoods in self.GoodsInfo:
-            self.GoodsInfo[sGoods] = [0, 0, 0]
+            self.NewGoodsInfo(sGoods)
         tInfo = self.GoodsInfo[sGoods]
         tInfo[1] = fSellPrice
         tInfo[2] -= iNum
-        self.Save((sGoods, *tInfo))
+        self.Update(sGoods, tInfo)
 
-    def Save(self, tInfo):
-        sql = mydefines.get_insert_sql(TABLE_NAME, tInfo, self.ColInfo)
+    def NewGoodsInfo(self, sGoods):
+        self.GoodsInfo[sGoods] = [0, 0, 0]
+        sql = mydefines.get_insert_sql(TABLE_NAME, [sGoods, 0, 0, 0], self.ColInfo)
+        pubdefines.call_manager_func("dbmgr", "Excute", sql)
+
+    def Update(self, sGoods, tInfo):
+        lstSet = []
+        for iIndex, value in enumerate(tInfo):
+            sColName, sType = self.ColInfo[iIndex + self.KeyNum]
+            value = mydefines.get_insert_value(value, sType)
+            lstSet.append("%s=%s" % (sColName, value))
+        sSet = ",".join(lstSet)
+        sql = "update %s set %s where Goods='%s'" % (TABLE_NAME, sSet, sGoods)
         pubdefines.call_manager_func("dbmgr", "Excute", sql)
 
     def Load(self):
@@ -57,7 +68,6 @@ class CGoodsManager(object):
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         for sGoods, *tInfo in result:
             self.GoodsInfo[sGoods] = tInfo
-            print(tInfo, type(tInfo))
             logging.debug("load: %s %s" % (sGoods, tInfo))
         logging.info("    load finish %s" % len(result))
 
