@@ -126,9 +126,22 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def ShowStock(self):
-        lstTitle = ["商品", "库存", "当前买入价格", "当前卖出价格"]
+        lstTitle = ["商品", "当前买入价格", "当前卖出价格", "库存"]
         self.tableWidgetStock.setHorizontalHeaderLabels(lstTitle)
-        self.tableWidgetStock.show()
+        dGoodsInfo = pubdefines.call_manager_func("goodsmgr", "GetGoodsInfo")
+        iGoodsNum = len(dGoodsInfo)
+        self.tableWidgetStock.setRowCount(iGoodsNum)
+
+        iIndex = 0
+        for sGoods, tInfo in dGoodsInfo.items():
+            item = QtWidgets.QTableWidgetItem(str(sGoods))
+            self.tableWidgetStock.setItem(iIndex, 0, item)
+            for y, tmp in enumerate(tInfo):
+                # TODO 其他类型怎么判断
+                item = QtWidgets.QTableWidgetItem(str(tmp))
+                self.tableWidgetStock.setItem(iIndex, y + 1, item)
+            iIndex += 1
+
 
 def InitMainWidget():
     app = QtWidgets.QApplication(sys.argv)

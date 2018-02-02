@@ -31,6 +31,9 @@ class CGoodsManager(object):
         self.GoodsInfo = {}
         self.Load()
 
+    def GetGoodsInfo(self):
+        return self.GoodsInfo
+
     def InputGoods(self, sGoods, fBuyPrice, iNum):
         if not sGoods in self.GoodsInfo:
             self.NewGoodsInfo(sGoods)
