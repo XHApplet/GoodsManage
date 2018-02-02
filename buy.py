@@ -22,6 +22,7 @@ create table %s
 )
 """ % TABLE_NAME
 
+
 class CBuyManager(object):
 
     ColInfo = [

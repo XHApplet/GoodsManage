@@ -72,9 +72,6 @@ class CGoodsManager(object):
         logging.info("    load finish %s" % len(result))
 
 
-class CGoods(object):
-    pass
-
 
 def InitGoods():
     oGoodsMgr = CGoodsManager()

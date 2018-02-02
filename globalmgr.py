@@ -81,16 +81,16 @@ class CGlobalManager(object):
         self.GoodsList.add(sGoods)
         self.Update("GoodsList")
 
-    def AddType(self, sType):
+    def AddGoodsType(self, sType):
         self.GoodsType.add(sType)
         self.Update("GoodsType")
 
-    def AddInput(self, sInput):
+    def AddBuyer(self, sInput):
         """添加货物买入方向"""
         self.GoodsInput.add(sInput)
         self.Update("GoodsInput")
 
-    def AddOutput(self, sOutput):
+    def AddSeller(self, sOutput):
         """添加货物卖出方向"""
         self.GoodsOutput.add(sOutput)
         self.Update("GoodsOutput")

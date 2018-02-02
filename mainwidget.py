@@ -18,7 +18,6 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.InitUI()
 
     def InitUI(self):
-        self.num = 0
         self.InitControl()
         self.InitConnect()
         self.show()
@@ -44,14 +43,14 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
         self.lineEditInputPrice.setValidator(self.ValidatorPrice)
         self.lineEditInputNum.setValidator(self.ValidatorNum)
-        self.lineEditOutpuPrice.setValidator(self.ValidatorPrice)
+        self.lineEditOutputPrice.setValidator(self.ValidatorPrice)
         self.lineEditOutputNum.setValidator(self.ValidatorNum)
 
 
     def InitConnect(self):
         self.pushButtonTmp.clicked.connect(self.TestOP)
         self.pushButtonInput.clicked.connect(self.InputGoods)
-        self.pushButtonOutput.clicked.connect(self.InputGoods)
+        self.pushButtonOutput.clicked.connect(self.OutputGoods)
 
     def TestOP(self):
         pubdefines.call_manager_func("buymgr", "QueryAllInfo")
@@ -79,25 +78,43 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.dateEditInput.setTime(QtCore.QTime.currentTime())
         oData = self.dateEditInput.dateTime()
         sData = oData.toString("yyyy-MM-dd hh:mm:ss")
-        sType = self.comboBoxInputType.currentText()
+        sGoodsType = self.comboBoxInputType.currentText()
         sGoods = self.comboBoxInputType.currentText()
         sBuyer = self.comboBoxInputBuyer.currentText()
         fPrice = float(self.lineEditInputPrice.text())
         iNum = int(self.lineEditInputNum.text())
         sRemark = self.lineEditInputRemark.text()
 
-        tInfo = (sData, sType, sGoods, sBuyer, fPrice, iNum, sRemark)
+        tInfo = (sData, sGoodsType, sGoods, sBuyer, fPrice, iNum, sRemark)
         logging.debug("InputGoods:%s" % (tInfo,))
 
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
         # TODO 判断是否已经有了.增加商品、价格判断
         pubdefines.call_manager_func("globalmgr", "AddGoods", sGoods)
-        pubdefines.call_manager_func("globalmgr", "AddType", sType)
-        pubdefines.call_manager_func("globalmgr", "AddInput", sBuyer)
+        pubdefines.call_manager_func("globalmgr", "AddGoodsType", sGoodsType)
+        pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
 
-    def InputGoods(self):
-        pass
+    def OutputGoods(self):
+        self.dateEditOutput.setTime(QtCore.QTime.currentTime())
+        oData = self.dateEditOutput.dateTime()
+        sData = oData.toString("yyyy-MM-dd hh:mm:ss")
+        sGoodsType = self.comboBoxOutputType.currentText()
+        sGoods = self.comboBoxOutputType.currentText()
+        sSeller = self.comboBoxOutputSeller.currentText()
+        fPrice = float(self.lineEditOutputPrice.text())
+        iNum = int(self.lineEditOutputNum.text())
+        sRemark = self.lineEditOutputRemark.text()
+
+        tInfo = (sData, sGoodsType, sGoods, sSeller, fPrice, iNum, sRemark)
+        logging.debug("OutputGoods:%s" % (tInfo,))
+
+        pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
+        pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
+        # TODO 判断是否已经有了.增加商品、价格判断
+        pubdefines.call_manager_func("globalmgr", "AddGoods", sGoods)
+        pubdefines.call_manager_func("globalmgr", "AddGoodsType", sGoodsType)
+        pubdefines.call_manager_func("globalmgr", "AddSeller", sSeller)
 
 def InitMainWidget():
     app = QtWidgets.QApplication(sys.argv)
