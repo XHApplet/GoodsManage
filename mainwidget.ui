@@ -22,7 +22,7 @@
    <string notr="true"/>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="InputWidget">
    <property name="enabled">
@@ -687,19 +687,14 @@
     <item>
      <widget class="QTableWidget" name="tableWidgetProfile">
       <property name="rowCount">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="columnCount">
-       <number>3</number>
+       <number>0</number>
       </property>
       <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
-      <row/>
-      <row/>
-      <column/>
-      <column/>
-      <column/>
      </widget>
     </item>
    </layout>

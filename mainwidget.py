@@ -162,11 +162,71 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             iIndex += 1
 
 
+
+
     def QueryProfile(self):
-        sBegin = self.dateEditBegin.date().toString("yyyy-MM-dd 00:00:00")
-        sEnd = self.dateEditEnd.date().toString("yyyy-MM-dd 23:59:59")
-        dBuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfo", sBegin, sEnd)
+        oBeginDate = self.dateEditBegin.date()
+        sBegin = oBeginDate.toString("yyyy-MM-dd 00:00:00")
+        oEndDate = self.dateEditEnd.date()
+        sEnd = oEndDate.toString("yyyy-MM-dd 23:59:59")
+        self.MaxProfileCol = 0
+        # dBuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfo", sBegin, sEnd)
         dSellInfo = pubdefines.call_manager_func("sellmgr", "GetSellInfo", sBegin, sEnd)
+        self.ProfileInfo = {}
+        for _, tSellInfo in dSellInfo.items():
+            sTime = tSellInfo[0]
+            sGoods = tSellInfo[1]
+            fSellPrice = tSellInfo[3]
+            iNum = tSellInfo[4]
+            fBuyPrice = pubdefines.call_manager_func("goodsmgr", "GetGoodsBuyPrice", sGoods)
+            fProfile = (fSellPrice - fBuyPrice) * iNum
+
+            sDayTime = sTime[:10]
+            sMonthTime = sTime[:7]
+            sYearTime = sTime[:4]
+            self.AddProfile(sGoods, sDayTime, fProfile)
+            self.AddProfile(sGoods, sMonthTime, fProfile)
+            self.AddProfile(sGoods, sYearTime, fProfile)
+
+        iGoodsNum = len(self.ProfileInfo)
+        self.tableWidgetProfile.setRowCount(iGoodsNum)
+        
+        lstTime = []
+        while oBeginDate.toString("yyyy-MM") <= oEndDate.toString("yyyy-MM"):
+            lstTime.append(oBeginDate.toString("yyyy-MM"))
+            oBeginDate = oBeginDate.addMonths(1)
+
+        self.tableWidgetProfile.setColumnCount(len(lstTime) + 1 )
+
+        lstGoods = [ sGoods for sGoods in self.ProfileInfo ]
+
+        lstTitle = lstTime[:]
+        lstTitle.insert(0, "商品")
+        self.tableWidgetProfile.setHorizontalHeaderLabels(lstTitle)
+        
+        for iRow, sGoods in enumerate(lstGoods):
+            item = QtWidgets.QTableWidgetItem(sGoods)
+            self.tableWidgetProfile.setItem(iRow, 0, item)
+            for iCol, sTime in enumerate(lstTime):
+                fProfile = self.GetProfileByDate(sGoods, sTime)
+                item = QtWidgets.QTableWidgetItem(str(fProfile))
+                self.tableWidgetProfile.setItem(iRow, iCol + 1, item)
+
+
+    def GetProfileByDate(self, sGoods, sTimeKey):
+        if not sGoods in self.ProfileInfo:
+            return ""
+        if not sTimeKey in self.ProfileInfo[sGoods]:
+            return ""
+        return self.ProfileInfo[sGoods][sTimeKey]
+
+
+    def AddProfile(self, sGoods, sTimeKey, fProfile):
+        if not sGoods in self.ProfileInfo:
+            self.ProfileInfo[sGoods] = {}
+        if not sTimeKey in self.ProfileInfo[sGoods]:
+            self.ProfileInfo[sGoods][sTimeKey] = 0
+        self.ProfileInfo[sGoods][sTimeKey] += fProfile
 
 
 def InitMainWidget():
