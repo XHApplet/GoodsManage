@@ -374,7 +374,7 @@
        </spacer>
       </item>
       <item row="2" column="2">
-       <widget class="ExtendedComboBox" name="comboBoxOutputSeller">
+       <widget class="ExtendedComboBox" name="comboBoxOutputBuyer">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -391,7 +391,7 @@
          </font>
         </property>
         <property name="text">
-         <string>卖出</string>
+         <string>买家</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -736,20 +736,26 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>comboBoxInputGoods</tabstop>
+  <tabstop>comboBoxOutputGoods</tabstop>
+  <tabstop>comboBoxOutputBuyer</tabstop>
+  <tabstop>lineEditOutputPrice</tabstop>
+  <tabstop>lineEditOutputNum</tabstop>
+  <tabstop>lineEditOutputRemark</tabstop>
+  <tabstop>pushButtonOutput</tabstop>
+  <tabstop>dateEditOutput</tabstop>
   <tabstop>comboBoxInputType</tabstop>
+  <tabstop>comboBoxInputGoods</tabstop>
   <tabstop>lineEditInputPrice</tabstop>
   <tabstop>lineEditInputNum</tabstop>
   <tabstop>lineEditInputRemark</tabstop>
   <tabstop>pushButtonInput</tabstop>
   <tabstop>dateEditInput</tabstop>
-  <tabstop>dateEditOutput</tabstop>
-  <tabstop>pushButtonOutput</tabstop>
-  <tabstop>comboBoxOutputSeller</tabstop>
-  <tabstop>lineEditOutputPrice</tabstop>
-  <tabstop>lineEditOutputNum</tabstop>
-  <tabstop>lineEditOutputRemark</tabstop>
-  <tabstop>comboBoxOutputGoods</tabstop>
+  <tabstop>tableWidgetStock</tabstop>
+  <tabstop>dateEditBegin</tabstop>
+  <tabstop>dateEditEnd</tabstop>
+  <tabstop>pushButtonQuery</tabstop>
+  <tabstop>tableWidgetProfile</tabstop>
+  <tabstop>pushButtonTmp</tabstop>
  </tabstops>
  <resources/>
  <connections/>

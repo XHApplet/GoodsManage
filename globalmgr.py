@@ -10,21 +10,18 @@ TABLE_NAME="tbl_global"
 TABLE_CREAT_SQL="""
 create table %s
 (
-    GoodsList blob not null,
-    GoodsType blob not null,
-    GoodsInput blob not null,
-    GoodsOutput blob not null
+    Name text not null PRIMARY KEY,
+    Data blob not null
 )
 """ % TABLE_NAME
 
 
 class CGlobalManager(object):
     ColInfo = [
-        ("GoodsList", "blob"),
-        ("GoodsType", "blob"),
-        ("GoodsInput", "blob"),
-        ("GoodsOutput", "blob"),
+        ("Name", "text"),
+        ("Data", "blob"),
     ]
+    NameList = ["GoodsInfo", "Buyer", "GoodsType"]
     FilterInfo = {
         "（" :"(",
         "）" :")",
@@ -33,17 +30,38 @@ class CGlobalManager(object):
     }
 
     def __init__(self):
-        self.GoodsList = set()
+        self.GoodsInfo = {}
         self.GoodsType = set({"公司", "非公司", "自制"})
-        self.GoodsInput = set()
-        self.GoodsOutput = set()
+        self.Buyer = set()
         self.LoadFromDB()
-        self.LoadFromConfig()
+        # self.LoadFromConfig()
+
 
     def FilterGoods(self, sGoods):
         for old, new in self.FilterInfo.items():
             sGoods = sGoods.replace(old, new)
         return sGoods
+
+
+    def LoadFromDB(self):
+        for sAttr in self.NameList:
+            sql = "select * from %s where Name='%s'" % (TABLE_NAME, sAttr)
+            result = pubdefines.call_manager_func("dbmgr", "Query", sql, True)
+            if not result:
+                self.FirstInsertData(sAttr)
+                continue
+            assert len(result) == 2
+            _, sData = result
+            value = mydefines.get_value_by_data(sData, "blob")
+            setattr(self, sAttr, value)
+
+
+    def FirstInsertData(self, sAttr):
+        value = getattr(self, sAttr, None)
+        assert value is not None
+        value = mydefines.get_insert_value(value, "blob")
+        sql = "insert into %s values('%s', %s)" % (TABLE_NAME, sAttr, value)
+        pubdefines.call_manager_func("dbmgr", "Excute", sql)
 
 
     def LoadFromConfig(self):
@@ -52,7 +70,7 @@ class CGlobalManager(object):
             lstGoods = fg.readlines()
             for sGoods in lstGoods:
                 sGoods = self.FilterGoods(sGoods)
-                self.GoodsList.add(sGoods)
+                self.GoodsInfo.add(sGoods)
         with open("config/output.txt", "r+", encoding="utf8") as fo:
             lstOutput = fo.readlines()
             for sOutput in lstOutput:
@@ -61,71 +79,53 @@ class CGlobalManager(object):
         self.UpdateAll()
 
 
-    def LoadFromDB(self):
-        sql = "select * from %s" % TABLE_NAME
-        result = pubdefines.call_manager_func("dbmgr", "Query", sql)
-        # 第一次获取为空时
-        if len(result) == 0:
-            self.FirstInsert()
+    def UpdateAll(self, sAttr):
+        value = getattr(self, sAttr, None)
+        assert value is not None
+        value = mydefines.get_insert_value(value, "blob")
+        sql = "update %s set Data=%s where Name='%s'" % (TABLE_NAME, value, sAttr)
+        pubdefines.call_manager_func("dbmgr", "Excute", sql)
+
+
+    def GetAllGoodsList(self):
+        return [ sGoods for sGoods in self.GoodsInfo ]
+
+
+    def GetAllType(self):
+        return self.GoodsType
+
+
+    def GetAllBuyer(self):
+        return self.Buyer
+
+
+    def HasGoods(self, sGoods):
+        if sGoods in self.GoodsInfo:
+            return True
+        return False
+
+
+    def AddGoods(self, sGoods, sGoodsType):
+        """添加商品以及类型"""
+        if self.HasGoods(sGoods):
             return
-        assert len(result) == 1
-        result = result[0]
-        assert len(result) == len(self.ColInfo)
-        for iIndex, tInfo in enumerate(self.ColInfo):
-            sAttr, sType = tInfo
-            value = mydefines.get_value_by_data(result[iIndex], sType)
-            setattr(self, sAttr, value)
-            # logging.debug("global:%s %s" % (sAttr, value))
+        self.GoodsInfo[sGoods] = sGoodsType
+        self.UpdateAll("GoodsInfo")
 
 
-    def FirstInsert(self):
-        tData = []
-        for sAttr, _ in self.ColInfo:
-            value = getattr(self, sAttr)
-            tData.append(value)
-        sql = mydefines.get_insert_sql(TABLE_NAME, tData, self.ColInfo)
-        pubdefines.call_manager_func("dbmgr", "Excute", sql)
+    def HasBuyer(self, sBuyer):
+        if sBuyer in self.Buyer:
+            return True
+        return False
 
 
-    def UpdateAll(self, *collist):
-        lstSet = []
-        for sColName, sType in self.ColInfo:
-            if not sColName in collist:
-                continue
-            value = getattr(self, sColName)
-            value = mydefines.get_insert_value(value, sType)
-            lstSet.append("%s=%s" % (sColName, value))
-        sSet = ",".join(lstSet)
-        sql = "update %s set %s" % (TABLE_NAME, sSet)
-        pubdefines.call_manager_func("dbmgr", "Excute", sql)
+    def AddBuyer(self, sBuyer):
+        """添加买家方向"""
+        if self.HasBuyer(sBuyer):
+            return
+        self.Buyer.add(sInput)
+        self.UpdateAll("Buyer")
 
-
-    def GetAllInfoByName(self, sName):
-        result = getattr(self, "Goods" + sName, None)
-        assert result is not None
-        return result
-
-
-    def AddGoods(self, sGoods):
-        self.GoodsList.add(sGoods)
-        self.UpdateAll("GoodsList")
-
-
-    def AddGoodsType(self, sType):
-        self.GoodsType.add(sType)
-        self.UpdateAll("GoodsType")
-
-
-    def AddBuyer(self, sInput):
-        """添加货物买入方向"""
-        self.GoodsInput.add(sInput)
-        self.UpdateAll("GoodsInput")
-
-
-    def AddSeller(self, sOutput):
-        """添加货物卖出方向"""
-        self.GoodsOutput.add(sOutput)
-        self.UpdateAll("GoodsOutput")
 
 
 

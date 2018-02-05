@@ -50,12 +50,15 @@ class CDBManager(object):
             logging.error("excute error:" + str(e))
         # coon.close()
 
-    def Query(self, sql):
+    def Query(self, sql, bOne=False):
         logging.debug("QuerySQL:" + sql)
         coon = self.GetConn()
         cursor = coon.cursor()
         cursor.execute(sql)
-        result = cursor.fetchall()
+        if bOne:
+            result = cursor.fetchone()
+        else:
+            result = cursor.fetchall()
         # coon.close()
         return result
 
