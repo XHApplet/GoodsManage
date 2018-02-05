@@ -25,20 +25,48 @@ class CGlobalManager(object):
         ("GoodsInput", "blob"),
         ("GoodsOutput", "blob"),
     ]
+    FilterInfo = {
+        "（" :"(",
+        "）" :")",
+        "\t" :"",
+        "\n" :"",
+    }
+
     def __init__(self):
         self.GoodsList = set()
-        self.GoodsType = set()
+        self.GoodsType = set({"公司", "非公司", "自制"})
         self.GoodsInput = set()
         self.GoodsOutput = set()
-        self.Load()
+        self.LoadFromDB()
+        self.LoadFromConfig()
+
+    def FilterGoods(self, sGoods):
+        for old, new in self.FilterInfo.items():
+            sGoods = sGoods.replace(old, new)
+        return sGoods
 
 
-    def Load(self):
+    def LoadFromConfig(self):
+        tGoodsList = set()
+        with open("config/goods.txt", "r+", encoding="utf8") as fg:
+            lstGoods = fg.readlines()
+            for sGoods in lstGoods:
+                sGoods = self.FilterGoods(sGoods)
+                self.GoodsList.add(sGoods)
+        with open("config/output.txt", "r+", encoding="utf8") as fo:
+            lstOutput = fo.readlines()
+            for sOutput in lstOutput:
+                sOutput = self.FilterGoods(sOutput)
+                self.GoodsOutput.add(sOutput)
+        self.UpdateAll()
+
+
+    def LoadFromDB(self):
         sql = "select * from %s" % TABLE_NAME
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
-        # 第一次获取为空时，保存空数据到数据库
+        # 第一次获取为空时
         if len(result) == 0:
-            self.FristInit()
+            self.FirstInsert()
             return
         assert len(result) == 1
         result = result[0]
@@ -50,7 +78,7 @@ class CGlobalManager(object):
             logging.debug("global:%s %s" % (sAttr, value))
 
 
-    def FristInit(self):
+    def FirstInsert(self):
         tData = []
         for sAttr, _ in self.ColInfo:
             value = getattr(self, sAttr)
@@ -59,7 +87,7 @@ class CGlobalManager(object):
         pubdefines.call_manager_func("dbmgr", "Excute", sql)
 
 
-    def Update(self, *collist):
+    def UpdateAll(self, *collist):
         lstSet = []
         for sColName, sType in self.ColInfo:
             if not sColName in collist:
@@ -75,25 +103,30 @@ class CGlobalManager(object):
     def GetAllInfoByName(self, sName):
         result = getattr(self, "Goods" + sName, None)
         assert result is not None
-        return 
+        return result
+
 
     def AddGoods(self, sGoods):
         self.GoodsList.add(sGoods)
-        self.Update("GoodsList")
+        self.UpdateAll("GoodsList")
+
 
     def AddGoodsType(self, sType):
         self.GoodsType.add(sType)
-        self.Update("GoodsType")
+        self.UpdateAll("GoodsType")
+
 
     def AddBuyer(self, sInput):
         """添加货物买入方向"""
         self.GoodsInput.add(sInput)
-        self.Update("GoodsInput")
+        self.UpdateAll("GoodsInput")
+
 
     def AddSeller(self, sOutput):
         """添加货物卖出方向"""
         self.GoodsOutput.add(sOutput)
-        self.Update("GoodsOutput")
+        self.UpdateAll("GoodsOutput")
+
 
 
 def InitGlobalManager():

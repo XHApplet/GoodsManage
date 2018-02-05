@@ -29,9 +29,9 @@ def InitConfig():
     logger.addHandler(ch)
     logging.info("init config...")
 
+    dbmanager.InitDBManager()
 
 def InitManager():
-    dbmanager.InitDBManager()
     globalmgr.InitGlobalManager()
     buy.InitBuy()
     sell.InitSell()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1085</width>
-    <height>544</height>
+    <height>532</height>
    </rect>
   </property>
   <property name="font">
@@ -22,7 +22,7 @@
    <string notr="true"/>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="InputWidget">
    <property name="enabled">
@@ -662,6 +662,9 @@
       <property name="columnCount">
        <number>4</number>
       </property>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
       <row/>
       <row/>
       <row/>
@@ -709,7 +712,7 @@
         </widget>
        </item>
        <item>
-        <widget class="CCustomDateEdit" name="dateEdit_2"/>
+        <widget class="CCustomDateEdit" name="dateEditBegin"/>
        </item>
        <item>
         <widget class="QLabel" name="label_16">
@@ -719,10 +722,10 @@
         </widget>
        </item>
        <item>
-        <widget class="CCustomDateEdit" name="dateEdit"/>
+        <widget class="CCustomDateEdit" name="dateEditEnd"/>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="pushButtonQuery">
          <property name="text">
           <string>查询</string>
          </property>
@@ -745,7 +748,22 @@
      </widget>
     </item>
     <item>
-     <widget class="QTableWidget" name="tableWidget"/>
+     <widget class="QTableWidget" name="tableWidgetProfile">
+      <property name="rowCount">
+       <number>2</number>
+      </property>
+      <property name="columnCount">
+       <number>3</number>
+      </property>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <row/>
+      <row/>
+      <column/>
+      <column/>
+      <column/>
+     </widget>
     </item>
    </layout>
   </widget>
