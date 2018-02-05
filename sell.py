@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import logging
 import mydefines
 
 from mytool import pubdefines
@@ -47,6 +48,15 @@ class CSellManager(object):
             logging.debug("sell query:%s %s" % (ID, tData))
             self.SellInfo[ID] = tData
 
+
+    def GetSellInfo(self, sBegin, sEnd):
+        dSellInfo = {}
+        sql = "select * from %s where Time>='%s' and Time<='%s'" % (TABLE_NAME, sBegin, sEnd)
+        result = pubdefines.call_manager_func("dbmgr", "Query", sql)
+        for ID, *tData in result:
+            logging.debug("sell info:%s %s" % (ID, tData))
+            dSellInfo[ID] = tData
+        return dSellInfo
 
 def InitSell():
     oSellMgr = CSellManager()

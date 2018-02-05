@@ -105,7 +105,7 @@ class CGlobalManager(object):
         return False
 
 
-    def AddGoods(self, sGoods, sGoodsType):
+    def AddGoods(self, sGoodsType, sGoods):
         """添加商品以及类型"""
         if self.HasGoods(sGoods):
             return
@@ -123,7 +123,7 @@ class CGlobalManager(object):
         """添加买家方向"""
         if self.HasBuyer(sBuyer):
             return
-        self.Buyer.add(sInput)
+        self.Buyer.add(sBuyer)
         self.UpdateAll("Buyer")
 
 
