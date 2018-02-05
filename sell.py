@@ -11,7 +11,6 @@ create table %s
 (
     ID integer PRIMARY KEY autoincrement,
     Time datetime not null,
-    Type text not null,
     Goods text not null,
     Seller text,
     Price real not null,
@@ -25,7 +24,6 @@ class CSellManager(object):
     
     ColInfo = [
         ("Time", "datetime"),
-        ("Type", "text"),
         ("Goods", "text"),
         ("Seller", "text"),
         ("Price", "real"),

@@ -61,31 +61,25 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.dateEditInput.setDate(oCurData)
         self.comboBoxInputType.clear()
         self.comboBoxInputGoods.clear()
-        self.comboBoxInputBuyer.clear()
         lstGoodsType = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Type")
         self.comboBoxInputType.addItems(lstGoodsType)
         lstGoods = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "List")
         self.comboBoxInputGoods.addItems(lstGoods)
         lstOutput = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Output")
-        self.comboBoxInputBuyer.addItems(lstOutput)
         self.comboBoxInputType.setCurrentText("")
         self.comboBoxInputGoods.setCurrentText("")
-        self.comboBoxInputBuyer.setCurrentText("")
 
 
     def InitOutput(self):
         oCurData = QtCore.QDate.currentDate()
         self.dateEditOutput.setDate(oCurData)
-        self.comboBoxOutputType.clear()
         self.comboBoxOutputGoods.clear()
         self.comboBoxOutputSeller.clear()
         lstGoodsType = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Type")
-        self.comboBoxOutputType.addItems(lstGoodsType)
         lstGoods = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "List")
         self.comboBoxOutputGoods.addItems(lstGoods)
         lstOutput = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Output")
         self.comboBoxOutputSeller.addItems(lstOutput)
-        self.comboBoxOutputType.setCurrentText("")
         self.comboBoxOutputGoods.setCurrentText("")
         self.comboBoxOutputSeller.setCurrentText("")
 
@@ -111,8 +105,6 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             return False
         if not self.comboBoxInputGoods.currentText():
             return False
-        if not self.comboBoxInputBuyer.currentText():
-            return False
         return True
 
     def InputGoods(self):
@@ -123,12 +115,11 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         sData = oData.toString("yyyy-MM-dd hh:mm:ss")
         sGoodsType = self.comboBoxInputType.currentText()
         sGoods = self.comboBoxInputGoods.currentText()
-        sBuyer = self.comboBoxInputBuyer.currentText()
         fPrice = float(self.lineEditInputPrice.text())
         iNum = int(self.lineEditInputNum.text())
         sRemark = self.lineEditInputRemark.text()
 
-        tInfo = (sData, sGoodsType, sGoods, sBuyer, fPrice, iNum, sRemark)
+        tInfo = (sData, sGoodsType, sGoods, fPrice, iNum, sRemark)
         logging.debug("InputGoods:%s" % (tInfo,))
 
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
@@ -136,27 +127,24 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         # TODO 判断是否已经有了.增加商品、价格判断
         pubdefines.call_manager_func("globalmgr", "AddGoods", sGoods)
         pubdefines.call_manager_func("globalmgr", "AddGoodsType", sGoodsType)
-        pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
 
     def OutputGoods(self):
         self.dateEditOutput.setTime(QtCore.QTime.currentTime())
         oData = self.dateEditOutput.dateTime()
         sData = oData.toString("yyyy-MM-dd hh:mm:ss")
-        sGoodsType = self.comboBoxOutputType.currentText()
         sGoods = self.comboBoxOutputGoods.currentText()
         sSeller = self.comboBoxOutputSeller.currentText()
         fPrice = float(self.lineEditOutputPrice.text())
         iNum = int(self.lineEditOutputNum.text())
         sRemark = self.lineEditOutputRemark.text()
 
-        tInfo = (sData, sGoodsType, sGoods, sSeller, fPrice, iNum, sRemark)
+        tInfo = (sData, sGoods, sSeller, fPrice, iNum, sRemark)
         logging.debug("OutputGoods:%s" % (tInfo,))
 
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
         # TODO 判断是否已经有了.增加商品、价格判断
         pubdefines.call_manager_func("globalmgr", "AddGoods", sGoods)
-        pubdefines.call_manager_func("globalmgr", "AddGoodsType", sGoodsType)
         pubdefines.call_manager_func("globalmgr", "AddSeller", sSeller)
 
 
@@ -172,7 +160,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             item = QtWidgets.QTableWidgetItem(str(sGoods))
             self.tableWidgetStock.setItem(iIndex, 0, item)
             for y, tmp in enumerate(tInfo):
-                # TODO 其他类型怎么判断
+                # TODO 其他类型怎么判断,字符串价格排序有问题
                 item = QtWidgets.QTableWidgetItem(str(tmp))
                 self.tableWidgetStock.setItem(iIndex, y + 1, item)
             iIndex += 1
