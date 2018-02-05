@@ -6,7 +6,7 @@
         {
             "label": "ui2py",
             "type": "shell",
-            "command": "python ${workspaceRoot}/../py2ui.py",
+            "command": "python ${workspaceRoot}/mytool/py2ui.py",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -30,6 +30,16 @@
             "label": "run current",
             "type": "shell",
             "command": "python ${file}",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "mklink mytool",
+            "type": "shell",
+            "command": "mklink /j ${workspaceRoot}\\mytool ${workspaceRoot}\\..\\mytool",
             "group": {
                 "kind": "build",
                 "isDefault": true
