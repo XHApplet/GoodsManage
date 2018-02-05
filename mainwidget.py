@@ -169,8 +169,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
     def QueryProfile(self):
         sBegin = self.dateEditBegin.date().toString("yyyy-MM-dd")
         sEnd = self.dateEditEnd.date().toString("yyyy-MM-dd")
-        print("begin", sBegin, sEnd)
-
+        dBuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfo", sBegin, sEnd)
 
 
 def InitMainWidget():

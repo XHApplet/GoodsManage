@@ -51,6 +51,8 @@ class CBuyManager(object):
 
     def GetBuyInfo(self, sBegin, sEnd):
         dBuyInfo = {}
+        sBegin = sBegin + " 0:0:0"
+        sEnd = sEnd + " 23:59:59"
         sql = "select * from %s where Time>='%s' and Time<='%s'" % (TABLE_NAME, sBegin, sEnd)
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         for ID, *tData in result:

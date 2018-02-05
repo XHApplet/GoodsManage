@@ -40,7 +40,7 @@ class CDBManager(object):
         return self.Conn
 
     def Excute(self, sql):
-        logging.debug("sql:" + sql)
+        logging.debug("ExcuteSQL:" + sql)
         coon = self.GetConn()
         cursor = coon.cursor()
         try:
@@ -51,6 +51,7 @@ class CDBManager(object):
         # coon.close()
 
     def Query(self, sql):
+        logging.debug("QuerySQL:" + sql)
         coon = self.GetConn()
         cursor = coon.cursor()
         cursor.execute(sql)
