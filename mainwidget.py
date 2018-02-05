@@ -19,29 +19,14 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
     def InitUI(self):
         self.InitControl()
+        self.InitInput()
+        self.InitOutput()
+        self.InitControl()
         self.InitConnect()
         self.show()
 
     def InitControl(self):
         """初始化控件+限制"""
-        oCurData = QtCore.QDate.currentDate()
-        self.dateEditInput.setDate(oCurData)
-        self.dateEditOutput.setDate(oCurData)
-        self.dateEditEnd.setDate(oCurData)
-        self.dateEditBegin.setDate(oCurData.addMonths(-1))
-
-        lstGoodsType = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Type")
-        self.comboBoxInputType.addItems(lstGoodsType)
-        self.comboBoxOutputType.addItems(lstGoodsType)
-        lstGoods = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "List")
-        self.comboBoxInputGoods.addItems(lstGoods)
-        self.comboBoxOutputGoods.addItems(lstGoods)
-        self.comboBoxInputBuyer.addItems([])
-        lstOutput = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Output")
-        self.comboBoxOutputSeller.addItems(lstOutput)
-
-        # self.comboBoxInputType.setCurrentText("")
-
         tRegExp = QtCore.QRegExp("^(-?\d+)(\.\d+)?$")
         self.ValidatorPrice = QtGui.QRegExpValidator(tRegExp)
         self.ValidatorNum = QtGui.QIntValidator(1, 999999)
@@ -57,14 +42,58 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.pushButtonInput.clicked.connect(self.InputGoods)
         self.pushButtonOutput.clicked.connect(self.OutputGoods)
         self.currentChanged.connect(self.TabChanged)
+        self.pushButtonQuery.clicked.connect(self.QueryProfile)
 
 
     def TabChanged(self, iIndex):
+        if iIndex == 0:
+            self.InitInput()
+        if iIndex == 1:
+            self.InitOutput()
         if iIndex == 2:
             self.ShowStock()
         if iIndex == 3:
             self.InitProfile()
 
+
+    def InitInput(self):
+        oCurData = QtCore.QDate.currentDate()
+        self.dateEditInput.setDate(oCurData)
+        self.comboBoxInputType.clear()
+        self.comboBoxInputGoods.clear()
+        self.comboBoxInputBuyer.clear()
+        lstGoodsType = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Type")
+        self.comboBoxInputType.addItems(lstGoodsType)
+        lstGoods = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "List")
+        self.comboBoxInputGoods.addItems(lstGoods)
+        lstOutput = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Output")
+        self.comboBoxInputBuyer.addItems(lstOutput)
+        self.comboBoxInputType.setCurrentText("")
+        self.comboBoxInputGoods.setCurrentText("")
+        self.comboBoxInputBuyer.setCurrentText("")
+
+
+    def InitOutput(self):
+        oCurData = QtCore.QDate.currentDate()
+        self.dateEditOutput.setDate(oCurData)
+        self.comboBoxOutputType.clear()
+        self.comboBoxOutputGoods.clear()
+        self.comboBoxOutputSeller.clear()
+        lstGoodsType = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Type")
+        self.comboBoxOutputType.addItems(lstGoodsType)
+        lstGoods = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "List")
+        self.comboBoxOutputGoods.addItems(lstGoods)
+        lstOutput = pubdefines.call_manager_func("globalmgr", "GetAllInfoByName", "Output")
+        self.comboBoxOutputSeller.addItems(lstOutput)
+        self.comboBoxOutputType.setCurrentText("")
+        self.comboBoxOutputGoods.setCurrentText("")
+        self.comboBoxOutputSeller.setCurrentText("")
+
+
+    def InitProfile(self):
+        oCurData = QtCore.QDate.currentDate()
+        self.dateEditEnd.setDate(oCurData)
+        self.dateEditBegin.setDate(oCurData.addMonths(-1))
 
     def TestOP(self):
         pubdefines.call_manager_func("buymgr", "QueryAllInfo")
@@ -93,7 +122,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         oData = self.dateEditInput.dateTime()
         sData = oData.toString("yyyy-MM-dd hh:mm:ss")
         sGoodsType = self.comboBoxInputType.currentText()
-        sGoods = self.comboBoxInputType.currentText()
+        sGoods = self.comboBoxInputGoods.currentText()
         sBuyer = self.comboBoxInputBuyer.currentText()
         fPrice = float(self.lineEditInputPrice.text())
         iNum = int(self.lineEditInputNum.text())
@@ -149,10 +178,10 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             iIndex += 1
 
 
-    def InitProfile(self):
-        oCurData = QtCore.QDate.currentDate()
-        self.dateEditEnd.setDate(oCurData)
-        self.dateEditBegin.setDate(oCurData.addMonths(-1))
+    def QueryProfile(self):
+        sBegin = self.dateEditBegin.date().toString("yyyy-MM-dd")
+        sEnd = self.dateEditEnd.date().toString("yyyy-MM-dd")
+        print("begin", sBegin, sEnd)
 
 
 

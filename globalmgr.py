@@ -75,7 +75,7 @@ class CGlobalManager(object):
             sAttr, sType = tInfo
             value = mydefines.get_value_by_data(result[iIndex], sType)
             setattr(self, sAttr, value)
-            logging.debug("global:%s %s" % (sAttr, value))
+            # logging.debug("global:%s %s" % (sAttr, value))
 
 
     def FirstInsert(self):

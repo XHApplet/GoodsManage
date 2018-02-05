@@ -51,6 +51,8 @@ class CBuyManager(object):
             logging.debug("buy query:%s %s" % (ID, tData))
             self.BuyInfo[ID] = tData
 
+    def GetBuyInfo(self, sBegin, sEnd):
+        pass
 
 def InitBuy():
     oBugMgr = CBuyManager()
