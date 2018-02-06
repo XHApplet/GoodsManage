@@ -87,23 +87,37 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.dateEditEnd.setDate(oCurData)
         self.dateEditBegin.setDate(oCurData.addMonths(-1))
 
+
     def TestOP(self):
         pubdefines.call_manager_func("buymgr", "QueryAllInfo")
 
+
+    def slotInformation(self, sMsg, sTitle="提示"):
+        QtWidgets.QMessageBox.information(self, sTitle,
+                                self.tr(sMsg))  
+        # QtWidgets.QMessageBox.information(self,"Information",  
+        #                         self.tr("填写任意想告诉于用户的信息!"))  
+        # self.label.setText("Information MessageBox")  
+
+
     def ValidInput(self):
         if not self.lineEditInputPrice.text():
-            self.lineEditInputPrice.setPlaceholderText("价格不能为空")
+            self.slotInformation("价格不能为空")
             return False
         if not self.lineEditInputNum.text():
-            self.lineEditInputNum.setPlaceholderText("数量不能为空")
+            self.slotInformation("数量不能为空")
             return False
         if not self.dateEditInput.dateTime():
+            self.slotInformation("日期不能为空")
             return False
         if not self.comboBoxInputType.currentText():
+            self.slotInformation("类别不能为空")
             return False
         if not self.comboBoxInputGoods.currentText():
+            self.slotInformation("商品不能为空")
             return False
         return True
+
 
     def InputGoods(self):
         if not self.ValidInput():
@@ -154,14 +168,14 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         iIndex = 0
         for sGoods, tInfo in dGoodsInfo.items():
             item = QtWidgets.QTableWidgetItem(str(sGoods))
+            item.setTextAlignment(QtCore.Qt.AlignCenter)
             self.tableWidgetStock.setItem(iIndex, 0, item)
             for y, tmp in enumerate(tInfo):
                 # TODO 其他类型怎么判断,字符串价格排序有问题
                 item = QtWidgets.QTableWidgetItem(str(tmp))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.tableWidgetStock.setItem(iIndex, y + 1, item)
             iIndex += 1
-
-
 
 
     def QueryProfile(self):
@@ -187,11 +201,12 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             self.AddProfile(sGoods, sDayTime, fProfile)
             self.AddProfile(sGoods, sMonthTime, fProfile)
             self.AddProfile(sGoods, sYearTime, fProfile)
+            self.AddProfile(sGoods, "总利润", fProfile)
 
         iGoodsNum = len(self.ProfileInfo)
         self.tableWidgetProfile.setRowCount(iGoodsNum)
         
-        lstTime = []
+        lstTime = ["总利润",]
         while oBeginDate.toString("yyyy-MM") <= oEndDate.toString("yyyy-MM"):
             lstTime.append(oBeginDate.toString("yyyy-MM"))
             oBeginDate = oBeginDate.addMonths(1)
@@ -206,10 +221,12 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         
         for iRow, sGoods in enumerate(lstGoods):
             item = QtWidgets.QTableWidgetItem(sGoods)
+            item.setTextAlignment(QtCore.Qt.AlignCenter)
             self.tableWidgetProfile.setItem(iRow, 0, item)
             for iCol, sTime in enumerate(lstTime):
                 fProfile = self.GetProfileByDate(sGoods, sTime)
                 item = QtWidgets.QTableWidgetItem(str(fProfile))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.tableWidgetProfile.setItem(iRow, iCol + 1, item)
 
 
