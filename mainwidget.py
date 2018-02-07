@@ -231,7 +231,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         lstTitle = lstTime[:]
         lstTitle.insert(0, "商品")
         self.tableWidgetProfile.setHorizontalHeaderLabels(lstTitle)
-        if len(lstTime) < 12:
+        if len(lstTime) < 14:
             self.tableWidgetProfile.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         
         for iRow, sGoods in enumerate(lstGoods):
