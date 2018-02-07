@@ -263,6 +263,8 @@ class Ui_MainWidget(object):
         self.tableWidgetStock.setRowCount(10)
         self.tableWidgetStock.setColumnCount(4)
         self.tableWidgetStock.setObjectName("tableWidgetStock")
+        self.tableWidgetStock.horizontalHeader().setCascadingSectionResizes(True)
+        self.tableWidgetStock.horizontalHeader().setStretchLastSection(False)
         self.tableWidgetStock.verticalHeader().setVisible(False)
         self.verticalLayout_2.addWidget(self.tableWidgetStock)
         MainWidget.addTab(self.StockWidget, "")

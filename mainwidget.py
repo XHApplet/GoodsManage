@@ -174,13 +174,16 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         iGoodsNum = len(dGoodsInfo)
         self.tableWidgetStock.setRowCount(iGoodsNum)
 
+        self.tableWidgetStock.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        # 设置每列自适应
+        # self.tableWidgetStock.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+
         iIndex = 0
         for sGoods, tInfo in dGoodsInfo.items():
             item = QtWidgets.QTableWidgetItem(str(sGoods))
             item.setTextAlignment(QtCore.Qt.AlignCenter)
             self.tableWidgetStock.setItem(iIndex, 0, item)
             for y in range(len(tInfo) - 1):
-            # for y, tmp in enumerate(tInfo):
                 # TODO 其他类型怎么判断,字符串价格排序有问题
                 xTmp = tInfo[y]
                 item = QtWidgets.QTableWidgetItem(str(xTmp))
@@ -197,7 +200,6 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         sEndTime = oEndDate.toString("yyyy-MM-dd 23:59:59")
         iEndTime = pubdefines.str_to_time(sEndTime)
         self.MaxProfileCol = 0
-        # dBuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfo", iBeginTime, iEndTime)
         dSellInfo = pubdefines.call_manager_func("sellmgr", "GetSellInfo", iBeginTime, iEndTime)
         self.ProfileInfo = {}
         for _, tSellInfo in dSellInfo.items():
@@ -229,6 +231,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         lstTitle = lstTime[:]
         lstTitle.insert(0, "商品")
         self.tableWidgetProfile.setHorizontalHeaderLabels(lstTitle)
+        if len(lstTime) < 12:
+            self.tableWidgetProfile.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         
         for iRow, sGoods in enumerate(lstGoods):
             item = QtWidgets.QTableWidgetItem(sGoods)

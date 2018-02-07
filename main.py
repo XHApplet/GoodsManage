@@ -20,7 +20,7 @@ def InitConfig():
     pubdefines.makedirs(sLogDir)
     logging.basicConfig(
         filename = "log/log%s.log" % pubdefines.time_to_str(timeformat="%Y-%m-%d %H-%M-%S"),
-        format = "[%(asctime)s] [%(levelname)s] %(message)s",
+        format = "[%(asctime)s] [%(levelname)s] [%(filename)s] [%(lineno)s] %(message)s",
         datefmt = "%Y-%m-%d %H:%M:%S",
         level = logging.DEBUG,
     )

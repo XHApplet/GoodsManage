@@ -99,6 +99,11 @@ class CGlobalManager(object):
         return self.Buyer
 
 
+    def GetGoodsType(self, sGoods):
+        sType = self.GoodsInfo.get(sGoods, None)
+        return sType
+
+
     def HasGoods(self, sGoods):
         if sGoods in self.GoodsInfo:
             return True
