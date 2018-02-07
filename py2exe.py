@@ -7,9 +7,10 @@ sCurPath = os.getcwd()
 print(sCurPath)
 
 sCmd = "pyinstaller -w \
+--workpath D:/mycode/exe/dist \
+--distpath D:/mycode/exe/build \
 --specpath D:/mycode/exe \
--p D:/mycode/exe \
--nxiaohao \
+-nGoodsManager \
 -i %s/image/main.ico \
 -p %s;\
 %s/mytool;\
