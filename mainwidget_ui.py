@@ -304,13 +304,16 @@ class Ui_MainWidget(object):
         MainWidget.addTab(self.ProfitWidget, "")
         self.InfoWidget = QtWidgets.QWidget()
         self.InfoWidget.setObjectName("InfoWidget")
-        self.pushButtonTmp = QtWidgets.QPushButton(self.InfoWidget)
-        self.pushButtonTmp.setGeometry(QtCore.QRect(260, 200, 131, 61))
-        self.pushButtonTmp.setObjectName("pushButtonTmp")
+        self.pushButtonQueryInput = QtWidgets.QPushButton(self.InfoWidget)
+        self.pushButtonQueryInput.setGeometry(QtCore.QRect(210, 80, 131, 61))
+        self.pushButtonQueryInput.setObjectName("pushButtonQueryInput")
+        self.pushButtonQueryOutput = QtWidgets.QPushButton(self.InfoWidget)
+        self.pushButtonQueryOutput.setGeometry(QtCore.QRect(210, 210, 131, 61))
+        self.pushButtonQueryOutput.setObjectName("pushButtonQueryOutput")
         MainWidget.addTab(self.InfoWidget, "")
 
         self.retranslateUi(MainWidget)
-        MainWidget.setCurrentIndex(2)
+        MainWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWidget)
         MainWidget.setTabOrder(self.comboBoxOutputGoods, self.comboBoxOutputBuyer)
         MainWidget.setTabOrder(self.comboBoxOutputBuyer, self.lineEditOutputPrice)
@@ -330,7 +333,7 @@ class Ui_MainWidget(object):
         MainWidget.setTabOrder(self.dateEditBegin, self.dateEditEnd)
         MainWidget.setTabOrder(self.dateEditEnd, self.pushButtonQuery)
         MainWidget.setTabOrder(self.pushButtonQuery, self.tableWidgetProfile)
-        MainWidget.setTabOrder(self.tableWidgetProfile, self.pushButtonTmp)
+        MainWidget.setTabOrder(self.tableWidgetProfile, self.pushButtonQueryInput)
 
     def retranslateUi(self, MainWidget):
         _translate = QtCore.QCoreApplication.translate
@@ -359,7 +362,8 @@ class Ui_MainWidget(object):
         self.pushButtonQuery.setText(_translate("MainWidget", "查询"))
         self.tableWidgetProfile.setSortingEnabled(True)
         MainWidget.setTabText(MainWidget.indexOf(self.ProfitWidget), _translate("MainWidget", "总利润"))
-        self.pushButtonTmp.setText(_translate("MainWidget", "PushButton"))
+        self.pushButtonQueryInput.setText(_translate("MainWidget", "查看进货记录"))
+        self.pushButtonQueryOutput.setText(_translate("MainWidget", "查看出货记录"))
         MainWidget.setTabText(MainWidget.indexOf(self.InfoWidget), _translate("MainWidget", "说明"))
 
 from pubui import CCustomDateEdit, ExtendedComboBox

@@ -16,7 +16,8 @@ create table %s
     Seller text,
     Price real not null,
     Num integer not null,
-    Remark text
+    Remark text,
+    Profile real not null
 )
 """ % TABLE_NAME
 
@@ -24,12 +25,13 @@ create table %s
 class CSellManager(object):
     
     ColInfo = [
-        ("Time", "datetime"),
+        ("Time", "integer"),
         ("Goods", "text"),
         ("Seller", "text"),
         ("Price", "real"),
         ("Num", "integer"),
         ("Remark", "text"),
+        ("Profile", "real"),    #本次卖货的利润，便于统计总利润
     ]
 
     def __init__(self):
@@ -49,14 +51,16 @@ class CSellManager(object):
             self.SellInfo[ID] = tData
 
 
-    def GetSellInfo(self, sBegin, sEnd):
+    def GetSellInfo(self, iBegin, iEnd):
         dSellInfo = {}
-        sql = "select * from %s where Time>='%s' and Time<='%s'" % (TABLE_NAME, sBegin, sEnd)
+        sql = "select * from %s where Time>=%s and Time<=%s" % (TABLE_NAME, iBegin, iEnd)
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         for ID, *tData in result:
             logging.debug("sell info:%s %s" % (ID, tData))
             dSellInfo[ID] = tData
         return dSellInfo
+
+
 
 def InitSell():
     oSellMgr = CSellManager()

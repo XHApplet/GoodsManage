@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
-from PyQt5 import QtWidgets
+import time
+from PyQt5 import QtWidgets, QtCore
 
 class CMY(QtWidgets.QTabWidget):
     def __init__(self):
@@ -18,10 +18,19 @@ class CMY(QtWidgets.QTabWidget):
     def Test(self, *args):
         print(args)
 
-app = QtWidgets.QApplication(sys.argv)
-love = CMY()
-love.show()
-sys.exit(app.exec_())
+# app = QtWidgets.QApplication(sys.argv)
+# love = CMY()
+# love.show()
+# sys.exit(app.exec_())
+
+t = QtCore.QDateTime.currentDateTime()
+p = t.toTime_t()
+# print(t, p)
+
+p = QtCore.QDate.currentDate()
+ti = p.toTime_t()
+print(p, ti)
+ # print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(p)))
 
 lstGoods = """
 120*20陶瓷

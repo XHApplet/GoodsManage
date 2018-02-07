@@ -25,7 +25,7 @@ create table %s
 class CBuyManager(object):
 
     ColInfo = [
-        ("Time", "datetime"),
+        ("Time", "integer"),
         ("Type", "text"),
         ("Goods", "text"),
         ("Price", "real"),
@@ -49,9 +49,9 @@ class CBuyManager(object):
             logging.debug("buy query:%s %s" % (ID, tData))
             self.BuyInfo[ID] = tData
 
-    def GetBuyInfo(self, sBegin, sEnd):
+    def GetBuyInfo(self, iBegin, iEnd):
         dBuyInfo = {}
-        sql = "select * from %s where Time>='%s' and Time<='%s'" % (TABLE_NAME, sBegin, sEnd)
+        sql = "select * from %s where Time>='%s' and Time<='%s'" % (TABLE_NAME, iBegin, iEnd)
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         for ID, *tData in result:
             logging.debug("buy info:%s %s" % (ID, tData))

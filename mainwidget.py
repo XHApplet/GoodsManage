@@ -37,8 +37,15 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.lineEditOutputNum.setValidator(self.ValidatorNum)
 
 
+    def TestQueryInput(self):
+        pubdefines.call_manager_func("buymgr", "QueryAllInfo")
+
+    def TestQueryOutput(self):
+        pubdefines.call_manager_func("sellmgr", "QueryAllInfo")
+
     def InitConnect(self):
-        self.pushButtonTmp.clicked.connect(self.TestOP)
+        self.pushButtonQueryInput.clicked.connect(self.TestQueryInput)
+        self.pushButtonQueryOutput.clicked.connect(self.TestQueryOutput)
         self.pushButtonInput.clicked.connect(self.InputGoods)
         self.pushButtonOutput.clicked.connect(self.OutputGoods)
         self.currentChanged.connect(self.TabChanged)
@@ -88,8 +95,6 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.dateEditBegin.setDate(oCurData.addMonths(-1))
 
 
-    def TestOP(self):
-        pubdefines.call_manager_func("buymgr", "QueryAllInfo")
 
 
     def slotInformation(self, sMsg, sTitle="提示"):
@@ -123,38 +128,42 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         if not self.ValidInput():
             return
         self.dateEditInput.setTime(QtCore.QTime.currentTime())
-        oData = self.dateEditInput.dateTime()
-        sData = oData.toString("yyyy-MM-dd hh:mm:ss")
+        oDataTime = self.dateEditInput.dateTime()
+        iTime = oDataTime.toTime_t()
         sGoodsType = self.comboBoxInputType.currentText()
         sGoods = self.comboBoxInputGoods.currentText()
         fPrice = float(self.lineEditInputPrice.text())
         iNum = int(self.lineEditInputNum.text())
         sRemark = self.lineEditInputRemark.text()
 
-        tInfo = (sData, sGoodsType, sGoods, fPrice, iNum, sRemark)
-        logging.debug("InputGoods:%s" % (tInfo,))
-
         # TODO 判断是否已经有了.增加商品、价格判断
+        tInfo = (iTime, sGoodsType, sGoods, fPrice, iNum, sRemark)
+        logging.info("InputGoods:%s" % (tInfo,))
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
         pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
 
+
     def OutputGoods(self):
         self.dateEditOutput.setTime(QtCore.QTime.currentTime())
-        oData = self.dateEditOutput.dateTime()
-        sData = oData.toString("yyyy-MM-dd hh:mm:ss")
+        oDataTime = self.dateEditOutput.dateTime()
+        iTime = oDataTime.toTime_t()
         sGoods = self.comboBoxOutputGoods.currentText()
         sBuyer = self.comboBoxOutputBuyer.currentText()
         fPrice = float(self.lineEditOutputPrice.text())
         iNum = int(self.lineEditOutputNum.text())
         sRemark = self.lineEditOutputRemark.text()
 
-        tInfo = (sData, sGoods, sBuyer, fPrice, iNum, sRemark)
-        logging.debug("OutputGoods:%s" % (tInfo,))
+        tInfo = [iTime, sGoods, sBuyer, fPrice, iNum, sRemark]
+        logging.info("OutputGoods:%s" % (tInfo,))
 
         # TODO 判断是否已经有了.增加商品、价格判断
+        # 计算本次卖出的利润为多少
+        fProfile = pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
+        assert fProfile is not None
+
+        tInfo.append(fProfile)
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
-        pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
         pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
 
 
@@ -170,9 +179,11 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             item = QtWidgets.QTableWidgetItem(str(sGoods))
             item.setTextAlignment(QtCore.Qt.AlignCenter)
             self.tableWidgetStock.setItem(iIndex, 0, item)
-            for y, tmp in enumerate(tInfo):
+            for y in range(len(tInfo) - 1):
+            # for y, tmp in enumerate(tInfo):
                 # TODO 其他类型怎么判断,字符串价格排序有问题
-                item = QtWidgets.QTableWidgetItem(str(tmp))
+                xTmp = tInfo[y]
+                item = QtWidgets.QTableWidgetItem(str(xTmp))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.tableWidgetStock.setItem(iIndex, y + 1, item)
             iIndex += 1
@@ -180,21 +191,21 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
     def QueryProfile(self):
         oBeginDate = self.dateEditBegin.date()
-        sBegin = oBeginDate.toString("yyyy-MM-dd 00:00:00")
+        sBeginTime = oBeginDate.toString("yyyy-MM-dd 00:00:00")
+        iBeginTime = pubdefines.str_to_time(sBeginTime)
         oEndDate = self.dateEditEnd.date()
-        sEnd = oEndDate.toString("yyyy-MM-dd 23:59:59")
+        sEndTime = oEndDate.toString("yyyy-MM-dd 23:59:59")
+        iEndTime = pubdefines.str_to_time(sEndTime)
         self.MaxProfileCol = 0
-        # dBuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfo", sBegin, sEnd)
-        dSellInfo = pubdefines.call_manager_func("sellmgr", "GetSellInfo", sBegin, sEnd)
+        # dBuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfo", iBeginTime, iEndTime)
+        dSellInfo = pubdefines.call_manager_func("sellmgr", "GetSellInfo", iBeginTime, iEndTime)
         self.ProfileInfo = {}
         for _, tSellInfo in dSellInfo.items():
-            sTime = tSellInfo[0]
+            iTime = tSellInfo[0]
+            sTime = pubdefines.time_to_str(iTime)
             sGoods = tSellInfo[1]
-            fSellPrice = tSellInfo[3]
-            iNum = tSellInfo[4]
-            fBuyPrice = pubdefines.call_manager_func("goodsmgr", "GetGoodsBuyPrice", sGoods)
-            fProfile = (fSellPrice - fBuyPrice) * iNum
-
+            fProfile = tSellInfo[6]
+            
             sDayTime = sTime[:10]
             sMonthTime = sTime[:7]
             sYearTime = sTime[:4]
