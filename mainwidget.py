@@ -18,9 +18,10 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.InitUI()
 
     def InitUI(self):
-        self.InitControl()
         self.InitInput()
         self.InitOutput()
+        self.InitProfile()
+
         self.InitControl()
         self.InitConnect()
         self.show()
@@ -50,9 +51,25 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.pushButtonOutput.clicked.connect(self.OutputGoods)
         self.currentChanged.connect(self.TabChanged)
         self.pushButtonQuery.clicked.connect(self.QueryProfile)
+        # self.comboBoxInputGoods.focusOutEvent.connect(self.FocusOutInputGoods)
+        # self.connect(self.comboBoxInputGoods, QtCore.SIGNAL)
+
+    def FocusOutInputGoods(self, e):
+        """录入商品：当输入完商品之后自动填写类型+价格"""
+        sGoods = self.comboBoxInputGoods.text()
+        if not pubdefines.call_manager_func("goodsmgr", "HasGoods", sGoods):
+            self.InputTiplabel.show()
+            return
+        fPrice = pubdefines.call_manager_func("goodsmgr", "GetGoodsBuyPrice", sGoods)
+        if not self.lineEditInputPrice.text():
+            self.lineEditInputPrice.setText(str(fPrice))
+        sType = pubdefines.call_manager_func("globalmgr", "GetGoodsType", sGoods)
+        if sType:
+            self.comboBoxInputType.setCurrentText(sType)
 
 
     def TabChanged(self, iIndex):
+        """tab页改变调用"""
         if iIndex == 0:
             self.InitInput()
         if iIndex == 1:
@@ -64,6 +81,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def InitInput(self):
+        """初始化录入商品界面"""
         oCurData = QtCore.QDate.currentDate()
         self.dateEditInput.setDate(oCurData)
         self.comboBoxInputType.clear()
@@ -74,9 +92,11 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.comboBoxInputGoods.addItems(lstGoods)
         self.comboBoxInputType.setCurrentIndex(0)
         self.comboBoxInputGoods.setCurrentIndex(-1)
+        self.InputTiplabel.hide()
 
 
     def InitOutput(self):
+        """初始化卖出商品界面"""
         oCurData = QtCore.QDate.currentDate()
         self.dateEditOutput.setDate(oCurData)
         self.comboBoxOutputGoods.clear()
@@ -90,22 +110,18 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def InitProfile(self):
+        """初始化利润界面"""
         oCurData = QtCore.QDate.currentDate()
         self.dateEditEnd.setDate(oCurData)
         self.dateEditBegin.setDate(oCurData.addMonths(-1))
 
 
-
-
     def slotInformation(self, sMsg, sTitle="提示"):
-        QtWidgets.QMessageBox.information(self, sTitle,
-                                self.tr(sMsg))  
-        # QtWidgets.QMessageBox.information(self,"Information",  
-        #                         self.tr("填写任意想告诉于用户的信息!"))  
-        # self.label.setText("Information MessageBox")  
+        QtWidgets.QMessageBox.information(self, sTitle, self.tr(sMsg))  
 
 
     def ValidInput(self):
+        """录入商品时控件判断"""
         if not self.lineEditInputPrice.text():
             self.slotInformation("价格不能为空")
             return False
@@ -125,6 +141,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def InputGoods(self):
+        """点击录入商品调用"""
         if not self.ValidInput():
             return
         self.dateEditInput.setTime(QtCore.QTime.currentTime())
@@ -141,10 +158,44 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         logging.info("InputGoods:%s" % (tInfo,))
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
-        pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
+
+        if not pubdefines.call_manager_func("globalmgr", "HasGoods", sGoods):
+            pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
+            return
+
+
+    def ValidOutput(self):
+        """卖出商品时控件判断"""
+        if not self.lineEditOutputPrice.text():
+            self.slotInformation("价格不能为空")
+            return False
+        if not self.lineEditOutputNum.text():
+            self.slotInformation("数量不能为空")
+            return False
+        if not self.dateEditOutput.dateTime():
+            self.slotInformation("日期不能为空")
+            return False
+        if not self.comboBoxOutputBuyer.currentText():
+            self.slotInformation("买家不能为空")
+            return False
+        if not self.comboBoxOutputGoods.currentText():
+            self.slotInformation("商品不能为空")
+            return False
+        sGoods = self.comboBoxOutputGoods.text()
+        if not pubdefines.call_manager_func("goodsmgr", "HasGoods", sGoods):
+            self.slotInformation("库存中无商品记录")
+            return False
+        iStock = pubdefines.call_manager_func("goodsmgr", "GetGoodsNum", sGoods)
+        iNum = int(self.lineEditOutputNum.text())
+        if iStock < iNum:
+            self.slotInformation("没有足够的库存,当前库存%s" % iStock)
+            return False
+        return True
 
 
     def OutputGoods(self):
+        if not self.ValidOutput():
+            return
         self.dateEditOutput.setTime(QtCore.QTime.currentTime())
         oDataTime = self.dateEditOutput.dateTime()
         iTime = oDataTime.toTime_t()
@@ -157,7 +208,6 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         tInfo = [iTime, sGoods, sBuyer, fPrice, iNum, sRemark]
         logging.info("OutputGoods:%s" % (tInfo,))
 
-        # TODO 判断是否已经有了.增加商品、价格判断
         # 计算本次卖出的利润为多少
         fProfile = pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
         assert fProfile is not None
@@ -193,6 +243,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def QueryProfile(self):
+        """查询利润"""
         oBeginDate = self.dateEditBegin.date()
         sBeginTime = oBeginDate.toString("yyyy-MM-dd 00:00:00")
         iBeginTime = pubdefines.str_to_time(sBeginTime)

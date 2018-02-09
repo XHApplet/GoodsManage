@@ -34,11 +34,17 @@ class CGoodsManager(object):
         self.Load()
 
 
+    def HasGoods(self, sGood):
+        if sGood in self.GoodsInfo:
+            return True
+        return False
+
+
     def GetGoodsInfo(self):
         return self.GoodsInfo
 
 
-    def GetGoodsNum(self):
+    def GetGoodsNum(self, sGoods):
         tInfo = self.GoodsInfo.get(sGoods, None)
         assert tInfo is not None
         return tInfo[2]
