@@ -4,6 +4,7 @@
 import marshal
 import binascii
 import json
+import xlwt
 
 def value_marshal_hex(xValue):
     sData = marshal.dumps(xValue)

@@ -3,6 +3,7 @@
 
 import sys
 import logging
+import xlwt
 
 import mainwidget_ui
 
@@ -56,6 +57,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.currentChanged.connect(self.TabChanged)
         self.pushButtonQuery.clicked.connect(self.QueryProfile)
         self.comboBoxInputGoods.MyFocusOutSignal.connect(self.FocusOutInputGoods)
+        self.pushButtonExport.clicked.connect(self.Export)
 
 
     def FocusOutInputGoods(self):
@@ -317,6 +319,31 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         if not sTimeKey in self.ProfileInfo[sGoods]:
             self.ProfileInfo[sGoods][sTimeKey] = 0
         self.ProfileInfo[sGoods][sTimeKey] += fProfile
+
+
+    def Export(self):
+        sFileName = QtWidgets.QFileDialog.getSaveFileName(self, "保存表格", "", ".xls(*.xls)")[0]
+        wbk = xlwt.Workbook()
+        sheet = wbk.add_sheet("sheet", True)
+        self.Write2Sheet(sheet)
+        wbk.save(sFileName)
+
+
+    def Write2Sheet(self, sheet):
+        iRow = self.tableWidgetProfile.rowCount()
+        iCol = self.tableWidgetProfile.columnCount()
+        for col in range(iCol):
+            oItem = self.tableWidgetProfile.horizontalHeaderItem(col)
+            text = str(oItem.text())
+            sheet.write(0, col, text)
+        for row in range(iRow):
+            for col in range(iCol):
+                oItem = self.tableWidgetProfile.item(row, col)
+                text = ""
+                if oItem:
+                    text = str(oItem.text())
+                sheet.write(row + 1, col, text)
+
 
 
 def InitMainWidget():

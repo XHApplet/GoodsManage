@@ -651,7 +651,14 @@
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QWidget" name="widget" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,0,1,0,1,1,1">
+       <item>
+        <widget class="QPushButton" name="pushButtonExport">
+         <property name="text">
+          <string>导出到表格</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
