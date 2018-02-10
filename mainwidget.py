@@ -17,6 +17,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.setupUi(self)
         self.InitUI()
 
+
     def InitUI(self):
         self.InitInput()
         self.InitOutput()
@@ -25,6 +26,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.InitControl()
         self.InitConnect()
         self.show()
+
 
     def InitControl(self):
         """初始化控件+限制"""
@@ -41,8 +43,10 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
     def TestQueryInput(self):
         pubdefines.call_manager_func("buymgr", "QueryAllInfo")
 
+
     def TestQueryOutput(self):
         pubdefines.call_manager_func("sellmgr", "QueryAllInfo")
+
 
     def InitConnect(self):
         self.pushButtonQueryInput.clicked.connect(self.TestQueryInput)
@@ -51,18 +55,18 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.pushButtonOutput.clicked.connect(self.OutputGoods)
         self.currentChanged.connect(self.TabChanged)
         self.pushButtonQuery.clicked.connect(self.QueryProfile)
-        # self.comboBoxInputGoods.focusOutEvent.connect(self.FocusOutInputGoods)
-        # self.connect(self.comboBoxInputGoods, QtCore.SIGNAL)
+        self.comboBoxInputGoods.MyFocusOutSignal.connect(self.FocusOutInputGoods)
 
-    def FocusOutInputGoods(self, e):
+
+    def FocusOutInputGoods(self):
         """录入商品：当输入完商品之后自动填写类型+价格"""
         sGoods = self.comboBoxInputGoods.text()
         if not pubdefines.call_manager_func("goodsmgr", "HasGoods", sGoods):
             self.InputTiplabel.show()
             return
+        self.InputTiplabel.hide()
         fPrice = pubdefines.call_manager_func("goodsmgr", "GetGoodsBuyPrice", sGoods)
-        if not self.lineEditInputPrice.text():
-            self.lineEditInputPrice.setText(str(fPrice))
+        self.lineEditInputPrice.setText(str(fPrice))    # 价格自动变
         sType = pubdefines.call_manager_func("globalmgr", "GetGoodsType", sGoods)
         if sType:
             self.comboBoxInputType.setCurrentText(sType)
@@ -161,7 +165,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
         if not pubdefines.call_manager_func("globalmgr", "HasGoods", sGoods):
             pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
-            return
+        
+        self.InitInput()
 
 
     def ValidOutput(self):
@@ -215,6 +220,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         tInfo.append(fProfile)
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
         pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
+
+        self.InitOutput()
 
 
     def ShowStock(self):

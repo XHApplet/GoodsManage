@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+
 from PyQt5 import QtGui, QtWidgets, QtCore
 
 
@@ -12,6 +13,9 @@ class CCustomDateEdit(QtWidgets.QDateEdit):
 
 
 class ExtendedComboBox(QtWidgets.QComboBox):
+
+    MyFocusOutSignal = QtCore.pyqtSignal()
+
     def __init__(self, parent=None):
         super(ExtendedComboBox, self).__init__(parent)
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
@@ -31,8 +35,8 @@ class ExtendedComboBox(QtWidgets.QComboBox):
         # connect signals
         self.lineEdit().textEdited[str].connect(self.pFilterModel.setFilterFixedString)
         self.completer.activated.connect(self.on_completer_activated)
- 
- 
+
+
     # on selection of an item from the completer, select the corresponding item from combobox 
     def on_completer_activated(self, text):
         if text:
@@ -55,3 +59,6 @@ class ExtendedComboBox(QtWidgets.QComboBox):
 
     def text(self):
         return self.currentText()
+
+    def focusOutEvent(self, e):
+        self.MyFocusOutSignal.emit()

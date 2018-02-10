@@ -18,6 +18,31 @@ class CMY(QtWidgets.QTabWidget):
     def Test(self, *args):
         print(args)
 
+
+class MyLineEdit(QtWidgets.QLineEdit):
+
+    MySignal = QtCore.pyqtSignal()
+
+    def CreateSinal(self, func):
+        weakFunc = weakref.ref(func)
+        self.MySignal.connect(weakFunc())
+
+    def focusOutEvent(self, e):
+        self.MySignal.emit()
+
+def MyFunc():
+    pass
+
+obj = MyLineEdit()
+obj.CreateSinal(MyFunc)
+
+
+
+
+
+
+
+
 # app = QtWidgets.QApplication(sys.argv)
 # love = CMY()
 # love.show()

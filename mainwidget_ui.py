@@ -125,7 +125,7 @@ class Ui_MainWidget(object):
         self.gridLayout.addWidget(self.label_4, 1, 4, 1, 1)
         self.InputTiplabel = QtWidgets.QLabel(self.InputWidget)
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(15)
         self.InputTiplabel.setFont(font)
         self.InputTiplabel.setStyleSheet("color:rgb(255, 0, 0)")
         self.InputTiplabel.setAlignment(QtCore.Qt.AlignCenter)
