@@ -41,6 +41,10 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.lineEditOutputNum.setValidator(self.ValidatorNum)
 
 
+    def Log(self, sMsg):
+        pubdefines.write_to_file("recode", sMsg)
+
+
     def TestQueryInput(self):
         pubdefines.call_manager_func("buymgr", "QueryAllInfo")
 
@@ -160,14 +164,15 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         sRemark = self.lineEditInputRemark.text()
 
         # TODO 判断是否已经有了.增加商品、价格判断
-        tInfo = (iTime, sGoodsType, sGoods, fPrice, iNum, sRemark)
+        tInfo = [iTime, sGoodsType, sGoods, fPrice, iNum, sRemark]
         logging.info("InputGoods:%s" % (tInfo,))
+        self.Log("InputGoods:%s" % (tInfo,))
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
 
         if not pubdefines.call_manager_func("globalmgr", "HasGoods", sGoods):
             pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
-        
+        self.Log("\tDone")
         self.InitInput()
 
 
@@ -214,7 +219,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
         tInfo = [iTime, sGoods, sBuyer, fPrice, iNum, sRemark]
         logging.info("OutputGoods:%s" % (tInfo,))
-
+        self.Log("OutputGoods:%s" % (tInfo,))
         # 计算本次卖出的利润为多少
         fProfile = pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
         assert fProfile is not None
@@ -222,7 +227,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         tInfo.append(fProfile)
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
         pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
-
+        self.Log("\tDone")
         self.InitOutput()
 
 
@@ -281,7 +286,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         
         lstTime = ["总利润",]
         while oBeginDate.toString("yyyy-MM") <= oEndDate.toString("yyyy-MM"):
-            lstTime.append(oBeginDate.toString("yyyy-MM"))
+            lstTime.append(oBeginDate.toString("yyyy-MM") + "月")
             oBeginDate = oBeginDate.addMonths(1)
 
         self.tableWidgetProfile.setColumnCount(len(lstTime) + 1 )

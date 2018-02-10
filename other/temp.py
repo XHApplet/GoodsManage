@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 # 读写2003 excel
 import xlrd
 import xlwt
