@@ -112,8 +112,8 @@ class CGlobalManager(object):
 
     def AddGoods(self, sGoodsType, sGoods):
         """添加商品以及类型"""
-        if self.HasGoods(sGoods):
-            return
+        # if self.HasGoods(sGoods):
+        #     return
         self.GoodsInfo[sGoods] = sGoodsType
         self.UpdateAll("GoodsInfo")
 

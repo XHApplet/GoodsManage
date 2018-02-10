@@ -23,6 +23,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.InitInput()
         self.InitOutput()
         self.InitProfile()
+        self.InitImport()
 
         self.InitControl()
         self.InitConnect()
@@ -56,17 +57,28 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
     def InitConnect(self):
         self.pushButtonQueryInput.clicked.connect(self.TestQueryInput)
         self.pushButtonQueryOutput.clicked.connect(self.TestQueryOutput)
+        self.pushButtonQueryInput.hide()
+        self.pushButtonQueryOutput.hide()
+
         self.pushButtonInput.clicked.connect(self.InputGoods)
         self.pushButtonOutput.clicked.connect(self.OutputGoods)
         self.currentChanged.connect(self.TabChanged)
         self.pushButtonQuery.clicked.connect(self.QueryProfile)
+        
         self.comboBoxInputGoods.MyFocusOutSignal.connect(self.FocusOutInputGoods)
+        self.comboBoxOutputGoods.MyFocusOutSignal.connect(self.FocusOutOutputGoods)
+        
         self.pushButtonExport.clicked.connect(self.Export)
+
+        self.pushButtonImportGoods.clicked.connect(self.ImportGoods)
+        self.pushButtonImportBuyer.clicked.connect(self.ImportBuyer)
 
 
     def FocusOutInputGoods(self):
         """录入商品：当输入完商品之后自动填写类型+价格"""
         sGoods = self.comboBoxInputGoods.text()
+        if not sGoods:
+            return
         if not pubdefines.call_manager_func("goodsmgr", "HasGoods", sGoods):
             self.InputTiplabel.show()
             return
@@ -76,6 +88,19 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         sType = pubdefines.call_manager_func("globalmgr", "GetGoodsType", sGoods)
         if sType:
             self.comboBoxInputType.setCurrentText(sType)
+
+
+    def FocusOutOutputGoods(self):
+        """卖出商品：当输入完商品之后自动填写价格"""
+        sGoods = self.comboBoxOutputGoods.text()
+        if not sGoods:
+            return
+        if not pubdefines.call_manager_func("goodsmgr", "HasGoods", sGoods):
+            # self.slotInformation("库存中无商品记录")
+            return
+        fPrice = pubdefines.call_manager_func("goodsmgr", "GetGoodsSellPrice", sGoods)
+        if abs(fPrice) > 1e-6:
+            self.lineEditOutputPrice.setText(str(fPrice))    # 价格自动变
 
 
     def TabChanged(self, iIndex):
@@ -88,6 +113,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             self.ShowStock()
         if iIndex == 3:
             self.InitProfile()
+        if iIndex == 4:
+            self.InitImport()
 
 
     def InitInput(self):
@@ -103,6 +130,9 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.comboBoxInputType.setCurrentIndex(0)
         self.comboBoxInputGoods.setCurrentIndex(-1)
         self.InputTiplabel.hide()
+        self.lineEditInputNum.setText("")
+        self.lineEditInputPrice.setText("")
+        self.lineEditInputRemark.setText("")
 
 
     def InitOutput(self):
@@ -117,6 +147,9 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.comboBoxOutputBuyer.addItems(lstBuyer)
         self.comboBoxOutputGoods.setCurrentIndex(-1)
         self.comboBoxOutputBuyer.setCurrentIndex(-1)
+        self.lineEditOutputNum.setText("")
+        self.lineEditOutputPrice.setText("")
+        self.lineEditOutputRemark.setText("")
 
 
     def InitProfile(self):
@@ -124,6 +157,12 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         oCurData = QtCore.QDate.currentDate()
         self.dateEditEnd.setDate(oCurData)
         self.dateEditBegin.setDate(oCurData.addMonths(-1))
+
+
+    def InitImport(self):
+        self.comboBoxImportGoodsType.clear()
+        lstGoodsType = pubdefines.call_manager_func("globalmgr", "GetAllType")
+        self.comboBoxImportGoodsType.addItems(lstGoodsType)
 
 
     def slotInformation(self, sMsg, sTitle="提示"):
@@ -277,8 +316,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             sMonthTime = sTime[:7]
             sYearTime = sTime[:4]
             self.AddProfile(sGoods, sDayTime, fProfile)
-            self.AddProfile(sGoods, sMonthTime, fProfile)
-            self.AddProfile(sGoods, sYearTime, fProfile)
+            self.AddProfile(sGoods, sMonthTime + "月", fProfile)
+            self.AddProfile(sGoods, sYearTime + "年", fProfile)
             self.AddProfile(sGoods, "总利润", fProfile)
 
         iGoodsNum = len(self.ProfileInfo)
@@ -349,6 +388,27 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
                     text = str(oItem.text())
                 sheet.write(row + 1, col, text)
 
+
+    def ImportGoods(self):
+        """根据商品类型批量导入商品"""
+        sGoodsType = self.comboBoxImportGoodsType.currentText()
+        sTexts = self.textEditImport.toPlainText()
+        lstText = sTexts.split("\n")
+        for sGoods in lstText:
+            if not sGoods:
+                continue
+            pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
+        self.textEditImport.setText("")
+
+    def ImportBuyer(self):
+        """批量导入买家"""
+        sTexts = self.textEditImport.toPlainText()
+        lstText = sTexts.split("\n")
+        for sBuyer in lstText:
+            if not sBuyer:
+                continue
+            pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
+        self.textEditImport.setText("")
 
 
 def InitMainWidget():

@@ -736,34 +736,138 @@
     </item>
    </layout>
   </widget>
+  <widget class="QWidget" name="tab">
+   <attribute name="title">
+    <string>导入</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QComboBox" name="comboBoxImportGoodsType"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonImportGoods">
+         <property name="toolTip">
+          <string>选择某类商品，批量导入</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+         <property name="text">
+          <string>批量导入商品</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonImportBuyer">
+         <property name="text">
+          <string>批量导入买家</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>说明：批量导入数据，每行为一条数据</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="textEditImport"/>
+    </item>
+   </layout>
+  </widget>
   <widget class="QWidget" name="InfoWidget">
    <attribute name="title">
     <string>说明</string>
    </attribute>
-   <widget class="QPushButton" name="pushButtonQueryInput">
+   <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>80</y>
-      <width>131</width>
-      <height>61</height>
+      <y>120</y>
+      <width>451</width>
+      <height>251</height>
      </rect>
     </property>
-    <property name="text">
-     <string>查看进货记录</string>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:15pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;版本：1.0.0&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;作者：肖豪&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;日期：2018.2.10&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;说明：用于管理日常进出货&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonQueryOutput">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>210</y>
-      <width>131</width>
-      <height>61</height>
+      <x>420</x>
+      <y>60</y>
+      <width>151</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>查看出货记录</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonQueryInput">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>60</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>查看进货记录</string>
     </property>
    </widget>
   </widget>
@@ -800,7 +904,6 @@
   <tabstop>dateEditEnd</tabstop>
   <tabstop>pushButtonQuery</tabstop>
   <tabstop>tableWidgetProfile</tabstop>
-  <tabstop>pushButtonQueryInput</tabstop>
  </tabstops>
  <resources/>
  <connections/>
