@@ -212,6 +212,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         if not pubdefines.call_manager_func("globalmgr", "HasGoods", sGoods):
             pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
         self.Log("\tDone")
+        self.slotInformation("进货成功")
         self.InitInput()
 
 
@@ -267,6 +268,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
         pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
         self.Log("\tDone")
+        self.slotInformation("出货成功")
         self.InitOutput()
 
 

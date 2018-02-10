@@ -7,8 +7,8 @@ sCurPath = os.getcwd()
 print(sCurPath)
 
 sCmd = "pyinstaller -w \
---workpath D:/mycode/exe/dist \
---distpath D:/mycode/exe/build \
+--workpath D:/mycode/exe/build \
+--distpath D:/mycode/exe/dist \
 --specpath D:/mycode/exe \
 -nGoodsManager \
 -i %s/image/main.ico \
