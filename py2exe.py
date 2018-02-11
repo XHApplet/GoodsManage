@@ -13,10 +13,11 @@ sCmd = "pyinstaller -w \
 -nGoodsManager \
 -i %s/image/main.ico \
 -p %s;\
+%s/image;\
 %s/mytool;\
 C:/Python36/DLLs;\
 C:/Python36/Lib \
 %s/main.py"\
-%(sCurPath, sCurPath, sCurPath, sCurPath)
+%(sCurPath, sCurPath, sCurPath, sCurPath, sCurPath)
 
 os.system(sCmd)

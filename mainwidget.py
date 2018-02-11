@@ -20,6 +20,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def InitUI(self):
+        self.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
         self.InitInput()
         self.InitOutput()
         self.InitProfile()

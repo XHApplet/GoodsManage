@@ -15,6 +15,9 @@ class Ui_MainWidget(object):
         font = QtGui.QFont()
         font.setPointSize(15)
         MainWidget.setFont(font)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("image/main.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWidget.setWindowIcon(icon)
         MainWidget.setToolTip("")
         self.InputWidget = QtWidgets.QWidget()
         self.InputWidget.setEnabled(True)
@@ -427,11 +430,11 @@ class Ui_MainWidget(object):
         self.textEdit.setHtml(_translate("MainWidget", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'SimSun\'; font-size:15pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">版本：1.0.0</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">作者：肖豪</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">日期：2018.2.10</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">说明：用于管理日常进出货</p></body></html>"))
+"</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:15pt;\">版本：1.0.0</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:15pt;\">作者：肖豪</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:15pt;\">日期：2018.2.10</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:15pt;\">说明：用于管理日常进出货</span></p></body></html>"))
         self.pushButtonQueryOutput.setText(_translate("MainWidget", "查看出货记录"))
         self.pushButtonQueryInput.setText(_translate("MainWidget", "查看进货记录"))
         MainWidget.setTabText(MainWidget.indexOf(self.InfoWidget), _translate("MainWidget", "说明"))
