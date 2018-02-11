@@ -205,13 +205,13 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         # TODO 判断是否已经有了.增加商品、价格判断
         tInfo = [iTime, sGoodsType, sGoods, fPrice, iNum, sRemark]
         logging.info("InputGoods:%s" % (tInfo,))
-        self.Log("InputGoods:%s" % (tInfo,))
+        self.Log("InputGoods: %s %s" % (oDataTime.toString("yyyy-MM-dd hh:mm:ss"),tInfo))
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
 
         if not pubdefines.call_manager_func("globalmgr", "HasGoods", sGoods):
             pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
-        self.Log("\tDone")
+        self.Log("\tInput Done")
         self.slotInformation("进货成功")
         self.InitInput()
 
@@ -259,7 +259,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
         tInfo = [iTime, sGoods, sBuyer, fPrice, iNum, sRemark]
         logging.info("OutputGoods:%s" % (tInfo,))
-        self.Log("OutputGoods:%s" % (tInfo,))
+        self.Log("OutputGoods: %s %s" % (oDataTime.toString("yyyy-MM-dd hh:mm:ss"),tInfo))
         # 计算本次卖出的利润为多少
         fProfile = pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
         assert fProfile is not None
@@ -267,7 +267,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         tInfo.append(fProfile)
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
         pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
-        self.Log("\tDone")
+        self.Log("\tOutput Done")
         self.slotInformation("出货成功")
         self.InitOutput()
 
@@ -326,7 +326,12 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.tableWidgetProfile.setRowCount(iGoodsNum)
         
         lstTime = ["总利润",]
+        sLastYear = ""
         while oBeginDate.toString("yyyy-MM") <= oEndDate.toString("yyyy-MM"):
+            sCurYear = oBeginDate.toString("yyyy")
+            if sLastYear != sCurYear:
+                 lstTime.append(sCurYear + "年")
+                 sLastYear = sCurYear
             lstTime.append(oBeginDate.toString("yyyy-MM") + "月")
             oBeginDate = oBeginDate.addMonths(1)
 
@@ -337,8 +342,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         lstTitle = lstTime[:]
         lstTitle.insert(0, "商品")
         self.tableWidgetProfile.setHorizontalHeaderLabels(lstTitle)
-        if len(lstTime) < 14:
-            self.tableWidgetProfile.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        # if len(lstTitle) < 14:
+        #     self.tableWidgetProfile.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         
         for iRow, sGoods in enumerate(lstGoods):
             item = QtWidgets.QTableWidgetItem(sGoods)
