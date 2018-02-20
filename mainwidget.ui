@@ -22,7 +22,7 @@
    <string notr="true"/>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>6</number>
   </property>
   <widget class="QWidget" name="InputWidget">
    <property name="enabled">
@@ -825,26 +825,20 @@
     <item>
      <widget class="QWidget" name="widget_2" native="true">
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="1" column="7">
-        <widget class="QPushButton" name="pushButtonQueryInputRecord">
-         <property name="maximumSize">
+       <item row="1" column="5">
+        <widget class="ExtendedComboBox" name="comboBoxInputRecord">
+         <property name="minimumSize">
           <size>
-           <width>100</width>
-           <height>16777215</height>
+           <width>200</width>
+           <height>0</height>
           </size>
-         </property>
-         <property name="text">
-          <string>查询</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="CCustomDateEdit" name="dateEditBeginInputRecord">
-         <property name="maximumSize">
-          <size>
-           <width>123</width>
-           <height>16777215</height>
-          </size>
+       <item row="0" column="8">
+        <widget class="QPushButton" name="pushButtonExportInputRecord">
+         <property name="text">
+          <string>导出到表格</string>
          </property>
         </widget>
        </item>
@@ -858,23 +852,46 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label_18">
+       <item row="1" column="7">
+        <spacer name="horizontalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="5">
+        <widget class="QLabel" name="label_14">
          <property name="text">
-          <string>结束日期</string>
+          <string>商品</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="1" column="5">
-        <widget class="ExtendedComboBox" name="comboBoxInputRecord">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>0</height>
-          </size>
+       <item row="0" column="7">
+        <widget class="QLabel" name="labelInputRecordNum">
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color:rgb(255, 0, 0)</string>
+         </property>
+         <property name="text">
+          <string>总进货数:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -888,10 +905,20 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="5">
-        <widget class="QLabel" name="label_14">
+       <item row="1" column="0">
+        <widget class="CCustomDateEdit" name="dateEditBeginInputRecord">
+         <property name="maximumSize">
+          <size>
+           <width>123</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_18">
          <property name="text">
-          <string>商品</string>
+          <string>结束日期</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -899,35 +926,15 @@
         </widget>
        </item>
        <item row="1" column="6">
-        <spacer name="horizontalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
+        <widget class="QPushButton" name="pushButtonQueryInputRecord">
+         <property name="maximumSize">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>100</width>
+           <height>16777215</height>
           </size>
          </property>
-        </spacer>
-       </item>
-       <item row="0" column="7">
-        <widget class="QPushButton" name="pushButtonExportInputRecord">
          <property name="text">
-          <string>导出到表格</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="6">
-        <widget class="QLabel" name="labelInputRecordNum">
-         <property name="styleSheet">
-          <string notr="true">color:rgb(255, 0, 0)</string>
-         </property>
-         <property name="text">
-          <string>总进货数:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <string>查询</string>
          </property>
         </widget>
        </item>
@@ -1071,8 +1078,12 @@
        </item>
        <item row="1" column="8">
         <widget class="QLabel" name="labelOutputRecordProfile">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="font">
           <font>
+           <pointsize>20</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>

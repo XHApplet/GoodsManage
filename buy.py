@@ -49,15 +49,28 @@ class CBuyManager(object):
             logging.debug("buy query:%s %s" % (ID, tData))
             self.BuyInfo[ID] = tData
 
+
     def GetBuyInfo(self, iBegin, iEnd):
         dBuyInfo = {}
-        sql = "select * from %s where Time>='%s' and Time<='%s'" % (TABLE_NAME, iBegin, iEnd)
+        sql = "select * from %s where Time>=%s and Time<=%s" % (TABLE_NAME, iBegin, iEnd)
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         for ID, *tData in result:
             logging.debug("buy info:%s %s" % (ID, tData))
             dBuyInfo[ID] = tData
         return dBuyInfo
 
+
+    def GetBuyInfoRecord(self, iBegin, iEnd, sGoods):
+        dBuyInfo = {}
+        sql = "select * from %s where Time>=%s and Time<=%s" % (TABLE_NAME, iBegin, iEnd)
+        if sGoods:
+            sql = sql + " and Goods like '%%%s%%'" % sGoods
+        sql += " ORDER BY Time"
+        result = pubdefines.call_manager_func("dbmgr", "Query", sql)
+        for ID, *tData in result:
+            logging.debug("buy record:%s %s" % (ID, tData))
+            dBuyInfo[ID] = tData
+        return dBuyInfo
 
 
 def InitBuy():

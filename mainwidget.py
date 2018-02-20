@@ -24,6 +24,8 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.InitOutput()
         self.InitProfile()
         self.InitImport()
+        self.InitInputRecord()
+        self.InitOutputRecord()
 
         self.InitControl()
         self.InitConnect()
@@ -73,6 +75,9 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.pushButtonImportGoods.clicked.connect(self.ImportGoods)
         self.pushButtonImportBuyer.clicked.connect(self.ImportBuyer)
 
+        self.pushButtonQueryInputRecord.clicked.connect(self.QueryInputRecord)
+        self.pushButtonQueryOutputRecord.clicked.connect(self.QueryOutputRecord)
+
 
     def FocusOutInputGoods(self):
         """录入商品：当输入完商品之后自动填写类型+价格"""
@@ -115,6 +120,10 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
             self.InitProfile()
         if iIndex == 4:
             self.InitImport()
+        if iIndex == 5:
+            self.InitInputRecord()
+        if iIndex == 6:
+            self.InitOutputRecord()
 
 
     def InitInput(self):
@@ -155,14 +164,40 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
     def InitProfile(self):
         """初始化利润界面"""
         oCurData = QtCore.QDate.currentDate()
-        self.dateEditEnd.setDate(oCurData)
         self.dateEditBegin.setDate(oCurData.addMonths(-1))
+        self.dateEditEnd.setDate(oCurData)
 
 
     def InitImport(self):
         self.comboBoxImportGoodsType.clear()
         lstGoodsType = pubdefines.call_manager_func("globalmgr", "GetAllType")
         self.comboBoxImportGoodsType.addItems(lstGoodsType)
+
+
+    def InitInputRecord(self):
+        oCurData = QtCore.QDate.currentDate()
+        self.dateEditBeginInputRecord.setDate(oCurData.addMonths(-1))
+        self.dateEditEndInputRecord.setDate(oCurData)
+        self.comboBoxInputRecord.clear()
+        lstGoods = pubdefines.call_manager_func("globalmgr", "GetAllGoodsList")
+        self.comboBoxInputRecord.addItems(lstGoods)
+        self.comboBoxInputRecord.setCurrentIndex(-1)
+        self.labelInputRecordNum.hide()
+
+
+    def InitOutputRecord(self):
+        oCurData = QtCore.QDate.currentDate()
+        self.dateEditBeginOutputRecord.setDate(oCurData.addMonths(-1))
+        self.dateEditEndOutputRecord.setDate(oCurData)
+        self.comboBoxOutputRecordGoods.clear()
+        lstGoods = pubdefines.call_manager_func("globalmgr", "GetAllGoodsList")
+        self.comboBoxOutputRecordGoods.addItems(lstGoods)
+        self.comboBoxOutputRecordGoods.setCurrentIndex(-1)
+        self.comboBoxOutputRecordBuyer.clear()
+        lstBuyer = pubdefines.call_manager_func("globalmgr", "GetAllBuyer")
+        self.comboBoxOutputRecordBuyer.addItems(lstBuyer)
+        self.comboBoxOutputRecordBuyer.setCurrentIndex(-1)
+        # self.labelOutputRecordProfile.hide()
 
 
     def slotInformation(self, sMsg, sTitle="提示"):
@@ -416,6 +451,66 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
                 continue
             pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
         self.textEditImport.setText("")
+
+
+    def QueryInputRecord(self):
+        """查询进货记录"""
+        oBeginDate = self.dateEditBeginInputRecord.date()
+        sBeginTime = oBeginDate.toString("yyyy-MM-dd 00:00:00")
+        iBeginTime = pubdefines.str_to_time(sBeginTime)
+        oEndDate = self.dateEditEndInputRecord.date()
+        sEndTime = oEndDate.toString("yyyy-MM-dd 23:59:59")
+        iEndTime = pubdefines.str_to_time(sEndTime)
+        sGoods = self.comboBoxInputRecord.currentText()
+
+        dbuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfoRecord", iBeginTime, iEndTime, sGoods)
+        lstHead = ["日期", "类型", "商品", "价格", "数量", "备注"]
+        self.tableWidgetInputRecord.setColumnCount(len(lstHead))
+        self.tableWidgetInputRecord.setRowCount(len(dbuyInfo))
+        self.tableWidgetInputRecord.setHorizontalHeaderLabels(lstHead)
+        self.tableWidgetInputRecord.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        iRow = 0
+        for _, tBuyInfo in dbuyInfo.items():
+            for iCol, xValue in enumerate(tBuyInfo):
+                if iCol == 0:
+                    xValue = pubdefines.time_to_str(tBuyInfo[iCol])
+                item = QtWidgets.QTableWidgetItem(str(xValue))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.tableWidgetInputRecord.setItem(iRow, iCol, item)
+            iRow += 1
+
+
+    def QueryOutputRecord(self):
+        """查询进货记录"""
+        oBeginDate = self.dateEditBeginOutputRecord.date()
+        sBeginTime = oBeginDate.toString("yyyy-MM-dd 00:00:00")
+        iBeginTime = pubdefines.str_to_time(sBeginTime)
+        oEndDate = self.dateEditEndOutputRecord.date()
+        sEndTime = oEndDate.toString("yyyy-MM-dd 23:59:59")
+        iEndTime = pubdefines.str_to_time(sEndTime)
+        sGoods = self.comboBoxOutputRecordGoods.currentText()
+        sBuyer = self.comboBoxOutputRecordBuyer.currentText()
+
+        dSellInfo = pubdefines.call_manager_func("sellmgr", "GetSellInfoRecord", iBeginTime, iEndTime, sGoods, sBuyer)
+        lstHead = ["日期", "商品", "卖家", "卖出价格", "数量", "备注", "利润"]
+        self.tableWidgetOutputRecord.setColumnCount(len(lstHead))
+        self.tableWidgetOutputRecord.setRowCount(len(dSellInfo))
+        self.tableWidgetOutputRecord.setHorizontalHeaderLabels(lstHead)
+        self.tableWidgetOutputRecord.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        iRow = fProfile = 0
+        for _, tSellInfo in dSellInfo.items():
+            for iCol, xValue in enumerate(tSellInfo):
+                if iCol == 0:
+                    xValue = pubdefines.time_to_str(xValue)
+                if iCol == 6:
+                    fProfile += xValue
+                item = QtWidgets.QTableWidgetItem(str(xValue))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.tableWidgetOutputRecord.setItem(iRow, iCol, item)
+            iRow += 1
+        self.labelOutputRecordProfile.setText("总利润:%s" % fProfile)
+        self.labelOutputRecordProfile.show()
+
 
 
 def InitMainWidget():
