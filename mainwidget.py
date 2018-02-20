@@ -272,11 +272,11 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         if not pubdefines.call_manager_func("goodsmgr", "HasGoods", sGoods):
             self.slotInformation("库存中无商品记录")
             return False
-        iStock = pubdefines.call_manager_func("goodsmgr", "GetGoodsNum", sGoods)
-        iNum = int(self.lineEditOutputNum.text())
-        if iStock < iNum:
-            self.slotInformation("没有足够的库存,当前库存%s" % iStock)
-            return False
+        # iStock = pubdefines.call_manager_func("goodsmgr", "GetGoodsNum", sGoods)
+        # iNum = int(self.lineEditOutputNum.text())
+        # if iStock < iNum:
+        #     self.slotInformation("没有足够的库存,当前库存%s" % iStock)
+        #     return False
         return True
 
 
@@ -464,7 +464,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         sGoods = self.comboBoxInputRecord.currentText()
 
         dbuyInfo = pubdefines.call_manager_func("buymgr", "GetBuyInfoRecord", iBeginTime, iEndTime, sGoods)
-        lstHead = ["日期", "类型", "商品", "价格", "数量", "备注"]
+        lstHead = ["日期", "类型", "商品", "进价", "数量", "备注"]
         self.tableWidgetInputRecord.setColumnCount(len(lstHead))
         self.tableWidgetInputRecord.setRowCount(len(dbuyInfo))
         self.tableWidgetInputRecord.setHorizontalHeaderLabels(lstHead)
@@ -492,7 +492,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         sBuyer = self.comboBoxOutputRecordBuyer.currentText()
 
         dSellInfo = pubdefines.call_manager_func("sellmgr", "GetSellInfoRecord", iBeginTime, iEndTime, sGoods, sBuyer)
-        lstHead = ["日期", "商品", "卖家", "卖出价格", "数量", "备注", "利润"]
+        lstHead = ["日期", "商品", "卖家", "售价", "数量", "备注", "利润"]
         self.tableWidgetOutputRecord.setColumnCount(len(lstHead))
         self.tableWidgetOutputRecord.setRowCount(len(dSellInfo))
         self.tableWidgetOutputRecord.setHorizontalHeaderLabels(lstHead)

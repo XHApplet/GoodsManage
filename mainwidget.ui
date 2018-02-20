@@ -22,7 +22,7 @@
    <string notr="true"/>
   </property>
   <property name="currentIndex">
-   <number>6</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="InputWidget">
    <property name="enabled">
@@ -1086,13 +1086,17 @@
            <pointsize>20</pointsize>
            <weight>75</weight>
            <bold>true</bold>
+           <underline>false</underline>
           </font>
+         </property>
+         <property name="acceptDrops">
+          <bool>false</bool>
          </property>
          <property name="styleSheet">
           <string notr="true">color:rgb(255, 0, 0)</string>
          </property>
          <property name="text">
-          <string>总收入:</string>
+          <string/>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
