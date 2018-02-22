@@ -37,10 +37,12 @@ class CSellManager(object):
     def __init__(self):
         self.SellInfo = {}
 
+
     def OutputGoods(self, tData):
         """出货保存数据库"""
         sql = mydefines.get_insert_sql(TABLE_NAME, tData, self.ColInfo)
         pubdefines.call_manager_func("dbmgr", "Excute", sql)
+
 
     def QueryAllInfo(self):
         """查询所有的进货信息"""
@@ -57,6 +59,21 @@ class CSellManager(object):
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         for ID, *tData in result:
             logging.debug("sell info:%s %s" % (ID, tData))
+            dSellInfo[ID] = tData
+        return dSellInfo
+
+
+    def GetSellInfoRecord(self, iBegin, iEnd, sGoods, sBuyer):
+        dSellInfo = {}
+        sql = "select * from %s where Time>=%s and Time<=%s" % (TABLE_NAME, iBegin, iEnd)
+        if sGoods:
+            sql = sql + " and Goods like '%%%s%%'" % sGoods
+        if sBuyer:
+            sql = sql + " and Seller like '%%%s%%'" % sBuyer
+        sql += " ORDER BY Time"
+        result = pubdefines.call_manager_func("dbmgr", "Query", sql)
+        for ID, *tData in result:
+            logging.debug("sell record:%s %s" % (ID, tData))
             dSellInfo[ID] = tData
         return dSellInfo
 
