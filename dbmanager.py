@@ -22,7 +22,7 @@ ALL_TABLES = [
 
 class CDBManager(object):
 
-    DB_Name = "goods.db"
+    DB_Name = "xh/goods.db"
 
     def __init__(self):
         self.Conn = None

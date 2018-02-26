@@ -16,6 +16,8 @@ import mainwidget
 from mytool import pubdefines
 
 def InitConfig():
+    if not os.path.exists("xh"):
+        os.makedirs("xh")
     sLogDir = os.path.join(os.getcwd(), "log")
     pubdefines.makedirs(sLogDir)
     logging.basicConfig(
@@ -26,7 +28,7 @@ def InitConfig():
     )
     ch = logging.StreamHandler()
     logger = logging.getLogger()
-    logger.addHandler(ch)
+    # logger.addHandler(ch)
     logging.info("init config...")
 
     dbmanager.InitDBManager()

@@ -46,7 +46,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
 
     def Log(self, sMsg):
-        pubdefines.write_to_file("recode", sMsg)
+        pubdefines.write_to_file("xh/recode", sMsg)
 
 
     def TestQueryInput(self):
@@ -241,13 +241,13 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         # TODO 判断是否已经有了.增加商品、价格判断
         tInfo = [iTime, sGoodsType, sGoods, fPrice, iNum, sRemark]
         logging.info("InputGoods:%s" % (tInfo,))
-        self.Log("InputGoods: %s %s" % (oDataTime.toString("yyyy-MM-dd hh:mm:ss"),tInfo))
+        self.Log("Input %s" % (tInfo,))
         pubdefines.call_manager_func("buymgr", "InputGoods", tInfo)
         pubdefines.call_manager_func("goodsmgr", "InputGoods", sGoods, fPrice, iNum)
 
         if not pubdefines.call_manager_func("globalmgr", "HasGoods", sGoods):
             pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
-        self.Log("\tInput Done")
+        self.Log("InputDone %s" % iTime)
         self.slotInformation("进货成功")
         self.InitInput()
 
@@ -295,7 +295,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
 
         tInfo = [iTime, sGoods, sBuyer, fPrice, iNum, sRemark]
         logging.info("OutputGoods:%s" % (tInfo,))
-        self.Log("OutputGoods: %s %s" % (oDataTime.toString("yyyy-MM-dd hh:mm:ss"),tInfo))
+        self.Log("Output %s" % (tInfo))
         # 计算本次卖出的利润为多少
         fProfile = pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
         assert fProfile is not None
@@ -303,7 +303,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         tInfo.append(fProfile)
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
         pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
-        self.Log("\tOutput Done")
+        self.Log("OutputDone %s" % iTime)
         self.slotInformation("出货成功")
         self.InitOutput()
 
