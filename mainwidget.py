@@ -248,7 +248,7 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         if not pubdefines.call_manager_func("globalmgr", "HasGoods", sGoods):
             pubdefines.call_manager_func("globalmgr", "AddGoods", sGoodsType, sGoods)
         self.Log("InputDone %s" % iTime)
-        # self.slotInformation("进货成功")
+        self.slotInformation("进货成功")
         self.InitInput()
 
 
@@ -297,16 +297,19 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         logging.info("OutputGoods:%s" % (tInfo,))
         self.Log("Output %s" % (tInfo))
         # 计算本次卖出的利润为多少
-        pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
+        fProfile = pubdefines.call_manager_func("goodsmgr", "OutputGoods", sGoods, fPrice, iNum)
+        assert fProfile is not None
+
+        tInfo.append(fProfile)
         pubdefines.call_manager_func("sellmgr", "OutputGoods", tInfo)
         pubdefines.call_manager_func("globalmgr", "AddBuyer", sBuyer)
         self.Log("OutputDone %s" % iTime)
-        # self.slotInformation("出货成功")
+        self.slotInformation("出货成功")
         self.InitOutput()
 
 
     def ShowStock(self):
-        lstTitle = ["商品", "进价", "售价", "库存"]
+        lstTitle = ["商品", "当前买入价格", "当前卖出价格", "库存"]
         self.tableWidgetStock.setHorizontalHeaderLabels(lstTitle)
         dGoodsInfo = pubdefines.call_manager_func("goodsmgr", "GetGoodsInfo")
         iGoodsNum = len(dGoodsInfo)
@@ -497,20 +500,15 @@ class CMyWindow(QtWidgets.QTabWidget, mainwidget_ui.Ui_MainWidget):
         self.tableWidgetOutputRecord.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         iRow = fProfile = 0
         for _, tSellInfo in dSellInfo.items():
-            iTime, sGoods, sSeller, fSellPrice, iNum, sRemark = tSellInfo
             for iCol, xValue in enumerate(tSellInfo):
                 if iCol == 0:
                     xValue = pubdefines.time_to_str(xValue)
+                if iCol == 6:
+                    fProfile += xValue
                 item = QtWidgets.QTableWidgetItem(str(xValue))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.tableWidgetOutputRecord.setItem(iRow, iCol, item)
-            fBuyPrice = pubdefines.call_manager_func("goodsmgr", "GetGoodsBuyPrice", sGoods)
-            fCurProfile = (fSellPrice - fBuyPrice) * iNum
-            item = QtWidgets.QTableWidgetItem(str(fCurProfile))
-            item.setTextAlignment(QtCore.Qt.AlignCenter)
-            self.tableWidgetOutputRecord.setItem(iRow, iCol + 1, item)
             iRow += 1
-            fProfile += fCurProfile
         self.labelOutputRecordProfile.setText("总利润:%s" % fProfile)
         self.labelOutputRecordProfile.show()
 

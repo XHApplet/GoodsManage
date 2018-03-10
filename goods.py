@@ -12,7 +12,8 @@ create table %s
     Goods text PRIMARY KEY not null,
     BuyPrice integer not null,
     SellPrice integer not null,
-    Num integer not null
+    Num integer not null,
+    NumInfo blob not null
 )
 """ % TABLE_NAME
 
@@ -24,6 +25,7 @@ class CGoodsManager(object):
         ("BuyPrice", "integer"),
         ("SellPrice", "integer"),
         ("Num", "integer"),
+        ("NumInfo", "blob"),
     ]
     KeyNum = 1
 
@@ -62,11 +64,23 @@ class CGoodsManager(object):
 
     def InputGoods(self, sGoods, fBuyPrice, iNum):
         if not sGoods in self.GoodsInfo:
-            self.NewGoodsInfo(sGoods) 
+            self.NewGoodsInfo(sGoods)
         tInfo = self.GoodsInfo[sGoods]
         tInfo[0] = fBuyPrice
         tInfo[2] += iNum
+        self.Add2NumInfo(tInfo[3], fBuyPrice, iNum)
         self.Update(sGoods, tInfo)
+
+
+    def Add2NumInfo(self, lstNumInfo, fBuyPrice, iNum):
+        if not lstNumInfo:
+            lstNumInfo.append([fBuyPrice, iNum])
+            return
+        fLastPrice, iNowNum = lstNumInfo[-1]
+        if abs(fLastPrice - fBuyPrice) < 1e-6:  #与上次价格相同
+            lstNumInfo[-1][1] = iNowNum + iNum
+        else:   #与上次价格不同
+            lstNumInfo.append([fBuyPrice, iNum])
 
 
     def OutputGoods(self, sGoods, fSellPrice, iNum):
@@ -74,12 +88,33 @@ class CGoodsManager(object):
             self.NewGoodsInfo(sGoods)
         tInfo = self.GoodsInfo[sGoods]
         tInfo[1] = fSellPrice
+        if tInfo[2] < iNum:
+            logging.error("%s 库存:%s 卖出:%s" % (sGoods, tInfo[2], iNum))
+            return
         tInfo[2] -= iNum
+        fProfile = self.Del4NumInfo(tInfo[3], fSellPrice, iNum)
         self.Update(sGoods, tInfo)
+        return fProfile
+
+
+    def Del4NumInfo(self, lstNumInfo, fSellPrice, iNum):
+        fProfile = 0
+        while lstNumInfo:
+            fBuyPrice, iStockNum = lstNumInfo.pop(0)
+            if iStockNum > iNum:
+                fProfile = fProfile + (fSellPrice - fBuyPrice) * iNum
+                lstNumInfo.insert(0, [fBuyPrice, iStockNum - iNum])
+                return fProfile
+            if iStockNum == iNum:
+                fProfile = fProfile + (fSellPrice - fBuyPrice) * iNum
+                return fProfile
+            iNum = iNum - iStockNum
+            fProfile = fProfile + (fSellPrice - fBuyPrice) * iStockNum
+        return fProfile
 
 
     def NewGoodsInfo(self, sGoods):
-        self.GoodsInfo[sGoods] = [0, 0, 0]
+        self.GoodsInfo[sGoods] = [0, 0, 0, []]
         sql = mydefines.get_insert_sql(TABLE_NAME, [sGoods, *self.GoodsInfo[sGoods]], self.ColInfo)
         pubdefines.call_manager_func("dbmgr", "Excute", sql)
 
@@ -100,6 +135,7 @@ class CGoodsManager(object):
         sql = "select * from %s" % TABLE_NAME
         result = pubdefines.call_manager_func("dbmgr", "Query", sql)
         for sGoods, *tInfo in result:
+            tInfo[3] = mydefines.get_value_by_data(tInfo[3], "blob")
             self.GoodsInfo[sGoods] = tInfo
             logging.debug("load: %s %s" % (sGoods, tInfo))
         logging.info("    load finish %s" % len(result))

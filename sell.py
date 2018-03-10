@@ -16,7 +16,8 @@ create table %s
     Seller text,
     Price real not null,
     Num integer not null,
-    Remark text
+    Remark text,
+    Profile real not null
 )
 """ % TABLE_NAME
 
@@ -30,6 +31,7 @@ class CSellManager(object):
         ("Price", "real"),
         ("Num", "integer"),
         ("Remark", "text"),
+        ("Profile", "real"),    #本次卖货的利润，便于统计总利润
     ]
 
     def __init__(self):
